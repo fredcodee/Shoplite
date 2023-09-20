@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+
+body{
+    font-family: 'Rubik', sans-serif;
+}
+
+h1{
+    font-family: 'Inclusive Sans', sans-serif;
+    font-family: 'Manrope', sans-serif;
+}
