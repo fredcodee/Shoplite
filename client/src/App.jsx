@@ -18,6 +18,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/error" element={<ErrorPage />} />
             {/* <Route element={<PrivateRoute> <WorkSpace /></PrivateRoute>} path="/user-workspace" /> */}
+            <Route path = "/homepage" element={<ViewPage />} />
           </Routes>
         {/* </AuthProvider> */}
       </BrowserRouter>
