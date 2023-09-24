@@ -41,7 +41,7 @@ const ViewPage = () => {
           </h3>
           <div className='grid grid-cols-6 gap-4 pt-5'>
             <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
+              <a href="/product/11">
               <img src={sample1} alt="" className='h-40 w-52'/>
               <div>
                 <h3 className='font-bold text-lg'>Title</h3>
