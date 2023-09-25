@@ -10,7 +10,7 @@ const StoreDashboard = () => {
                     <a href="/my-products" className='hover:text-green-600 p-2'>My Products</a> <br />
                     <a href="/store/orders" className='hover:text-green-600  p-2'>Orders</a> <br />
                     <a href="/all-reviews" className='hover:text-green-600 p-2'> Reviews</a> <br />
-                    <a href="#" className='hover:text-green-600 p-2'>My store Profile</a> <br />
+                    <a href="/my-store/profile" className='hover:text-green-600 p-2'>My store Profile</a> <br />
                     <a href="/mystore" className='hover:text-green-600 p-2'> View My store</a>
                 </div>
             </div>
