@@ -16,7 +16,7 @@ const MyProducts = () => {
       <div className='text-center pt-4'>
         <button type="button"  onClick={togglePopUpForAddProduct} className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Add New Product</button>
       </div>
-       {/* for popup for project members*/}
+       {/* for popup for adding product*/}
        {showPopUpForAddProduct&& <PopUp
                 content={<>
                     <div id="staticModal" data-modal-backdrop="static" tabIndex="-1" aria-hidden="true" className="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -59,6 +59,12 @@ const MyProducts = () => {
                                                 Price
                                             </label>
                                             <input type="number" id="Price" className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm" placeholder="Product Price" required/>
+                                        </div>
+                                        <div className='pb-3'>
+                                            <label htmlFor="Picture">
+                                                Picture
+                                            </label>
+                                            <input type="file" id="Picture" className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"/>
                                         </div>
                                         <div className='text-center'>
                                           <button type="button" class="text-white text-xl bg-green-500 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg  px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Add</button>
