@@ -13,6 +13,7 @@ import StoreDashboard from './pages/StoreDashboard';
 import Store from './pages/Store';
 import MyProducts from './pages/MyProducts';
 import StoreOrders from './pages/StoreOrders';
+import AllReviews  from './pages/AllReviews';
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/:storeName" element = {<Store/>} />
             <Route path="/my-products" element = {<MyProducts />} />
             <Route path = "/store/orders" element ={<StoreOrders/>}/>
+            <Route path ="/all-reviews" element ={<AllReviews/>}/>
 
             <Route path="/error" element={<ErrorPage />} />
             {/* <Route element={<PrivateRoute> <WorkSpace /></PrivateRoute>} path="/user-workspace" /> */}
