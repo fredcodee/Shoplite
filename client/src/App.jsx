@@ -12,6 +12,7 @@ import CreateStore from './pages/CreateStore';
 import StoreDashboard from './pages/StoreDashboard';
 import Store from './pages/Store';
 import MyProducts from './pages/MyProducts';
+import StoreOrders from './pages/StoreOrders';
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
             <Route path="/dashboard" element={<StoreDashboard/>} />
             <Route path="/:storeName" element = {<Store/>} />
             <Route path="/my-products" element = {<MyProducts />} />
+            <Route path = "/store/orders" element ={<StoreOrders/>}/>
 
             <Route path="/error" element={<ErrorPage />} />
             {/* <Route element={<PrivateRoute> <WorkSpace /></PrivateRoute>} path="/user-workspace" /> */}
