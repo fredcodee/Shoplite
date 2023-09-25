@@ -10,6 +10,7 @@ import CartPage  from './pages/CartPage';
 import OrdersPage from './pages/OrdersPage';
 import CreateStore from './pages/CreateStore';
 import StoreDashboard from './pages/StoreDashboard';
+import Store from './pages/Store';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
             <Route path ="/orders" element={<OrdersPage/>} />
             <Route path ="/create-store" element={<CreateStore/>} />
             <Route path="/store-dashboard" element={<StoreDashboard/>} />
+            <Route path="/:storeName" element = {<Store/>} />
 
             <Route path="/error" element={<ErrorPage />} />
             {/* <Route element={<PrivateRoute> <WorkSpace /></PrivateRoute>} path="/user-workspace" /> */}
