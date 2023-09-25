@@ -2,7 +2,6 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import { useState, useEffect } from 'react';
 import sample1 from '../assets/images/sample1.png';
 
 const CartPage = () => {

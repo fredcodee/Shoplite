@@ -7,6 +7,7 @@ import ViewPage from "../src/pages/ViewPage"
 import ErrorPage from "../src/pages/ErrorPage"
 import ProductPage from './pages/ProductPage';
 import CartPage  from './pages/CartPage';
+import OrdersPage from './pages/OrdersPage';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/product/:id" element={<ProductPage/>} />
             <Route path = "/cart" element={<CartPage/>} />
+            <Route path ="/orders" element={<OrdersPage/>} />
 
             <Route path="/error" element={<ErrorPage />} />
             {/* <Route element={<PrivateRoute> <WorkSpace /></PrivateRoute>} path="/user-workspace" /> */}
