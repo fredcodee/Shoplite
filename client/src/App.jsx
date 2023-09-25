@@ -11,6 +11,7 @@ import OrdersPage from './pages/OrdersPage';
 import CreateStore from './pages/CreateStore';
 import StoreDashboard from './pages/StoreDashboard';
 import Store from './pages/Store';
+import MyProducts from './pages/MyProducts';
 
 function App() {
 
@@ -26,8 +27,9 @@ function App() {
             <Route path = "/cart" element={<CartPage/>} />
             <Route path ="/orders" element={<OrdersPage/>} />
             <Route path ="/create-store" element={<CreateStore/>} />
-            <Route path="/store-dashboard" element={<StoreDashboard/>} />
+            <Route path="/dashboard" element={<StoreDashboard/>} />
             <Route path="/:storeName" element = {<Store/>} />
+            <Route path="/my-products" element = {<MyProducts />} />
 
             <Route path="/error" element={<ErrorPage />} />
             {/* <Route element={<PrivateRoute> <WorkSpace /></PrivateRoute>} path="/user-workspace" /> */}
