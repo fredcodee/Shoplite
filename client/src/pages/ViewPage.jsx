@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
+import SearchResults from '../components/SearchResults'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import sample1 from '../assets/images/sample1.png'
@@ -33,6 +34,9 @@ const ViewPage = () => {
               <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-green-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
             </div>
           </form>
+
+          {/* add condition to only show if data > 0 */}
+          <SearchResults/>
         </div>
 
         <div className='mb-5'>
