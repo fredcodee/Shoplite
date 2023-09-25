@@ -1,8 +1,6 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import MyOrderLists from '../components/MyOrderLists';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 
 const OrdersPage = () => {
