@@ -3,4 +3,12 @@ const health = async (req, res) => {
     return res.json({ 'status': 'ok' })
 }
 
-module.exports={health}
+
+const login =async(req, res)=>{
+    return res.json('login')
+}
+
+const loginWithGoogle = async(req,res) =>{
+    return res.json('login')
+}
+module.exports={health, login, loginWithGoogle}

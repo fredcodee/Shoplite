@@ -3,6 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 
 const RegisterPage = () => {
+  const googleAuth = () => {
+    window.open(`${import.meta.env.VITE_API_BASE_URL_DEV}/auth/google`, "_self")
+  }
   return (
     <div>
       <div className="flex justify-center items-center min-h-screen bg-slate-200">
@@ -44,7 +47,7 @@ const RegisterPage = () => {
           <hr />
           <div className='text-center pt-3'>
             <p>or Register with</p>
-            <button type="button" className=" mt-3 py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-400 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"> <span className='pr-2'><FontAwesomeIcon icon={faGoogle} style={{color: "#d71919",}} /></span>Google</button>
+            <button onClick={googleAuth} className=" mt-3 py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-400 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"> <span className='pr-2'><FontAwesomeIcon icon={faGoogle} style={{color: "#d71919",}} /></span>Google</button>
             <br />
             <small>I already have an account <span><a href="/login" className='text-blue-600'>click here :)</a></span></small>
           </div>
