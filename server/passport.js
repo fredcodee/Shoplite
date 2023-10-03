@@ -10,9 +10,21 @@ passport.use(new GoogleStrategy({
     callbackURL: "/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ googleId: profile.id, name:profile.displayName}, function (err, user) {
-      return cb(err, user);
-    });
+    User.findOne({ googleId: profile.id })
+    .then(result => {
+      if (result) {
+        return cb(null, result);
+      } else {
+        const newUser = new User({
+          googleId: profile.id,
+          name: profile.displayName,
+        });
+        newUser.save();
+      }
+    })
+    .catch(err => {
+      return cb(err);
+    });;
   }
 ));
 
