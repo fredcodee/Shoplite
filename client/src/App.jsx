@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import HomePage from "../src/pages/HomePage"
 import LoginPage from "../src/pages/LoginPage"
@@ -15,8 +15,40 @@ import MyProducts from './pages/MyProducts';
 import StoreOrders from './pages/StoreOrders';
 import AllReviews  from './pages/AllReviews';
 import MyStore from './pages/MyStore';
+import Api from './Api';
 
 function App() {
+  // const [user, setUser] = useState(null);
+
+  // useEffect(() => {
+  //   getUser();
+  // }, []);
+
+  // const getUser = async() => {
+  //   Api.get('/auth/login/success',
+  //   {
+  //     headers:{
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //       "Access-Control-Allow-Credentials": true,
+  //     }
+  //   },
+  //   {
+  //     credentials:"include"
+  //   })
+  //     .then((response) => {
+  //       console.log(response)
+  //       if (response.status === 200) return response.json();
+  //       throw new Error("authentication has been failed!");
+  //     })
+  //     .then((resObject) => {
+  //       setUser(resObject.user);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+
 
   return (
     <>
