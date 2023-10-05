@@ -18,14 +18,14 @@ import MyStore from './pages/MyStore';
 import Api from './Api';
 
 function App() {
-  // const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
   // useEffect(() => {
   //   getUser();
   // }, []);
 
   // const getUser = async() => {
-  //   Api.get('/auth/login/success',
+  //   await Api.get('/auth/login/success',
   //   {
   //     headers:{
   //       Accept: "application/json",

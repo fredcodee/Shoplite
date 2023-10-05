@@ -13,7 +13,7 @@ router.post("/register", async(req, res)=>{
     } 
 
     const user = new User({
-            nameame: name,
+            name: name,
             email: email,
             password: password,
         });
@@ -28,21 +28,27 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 
 
 
-router.get("/login/success", (req, res) => {
+router.get("/check-authentication", (req, res) => {
     if (req.user) {
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "successfull",
-        user: req.user,
-        cookies: req.cookies
+        user: req.user
       });
     }
+    return res.status(400).json({message:"please Login"})
   });
 
-  router.get("/logout", (req, res) => {
-    req.logout();
-    res.redirect(process.env.FRONTEND_DOMAIN+"login");
-  });
+
+router.get("/logout", (req, res) => {
+    req.logout(((err) => {
+        if (err) {
+            console.error(err);
+        }
+        return res.status(200).json({ message: "user logged out"})
+    }
+    ))
+});
   
 
 router.get("/login/failed", (req, res) => {
@@ -54,9 +60,9 @@ router.get("/login/failed", (req, res) => {
 
 router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
 
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login/failed' }), (req, res) => {
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: `${process.env.FRONTEND_DOMAIN}login` }), (req, res) => {
   // Redirect to your React app's frontend
-  res.redirect(process.env.FRONTEND_DOMAIN);
+  res.redirect(`${process.env.FRONTEND_DOMAIN}homepage`);
 });
 
 module.exports = router;
