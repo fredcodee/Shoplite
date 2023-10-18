@@ -1,80 +1,70 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from "../src/pages/HomePage"
 import LoginPage from "../src/pages/LoginPage"
 import RegisterPage from "../src/pages/RegisterPage"
 import ViewPage from "../src/pages/ViewPage"
 import ErrorPage from "../src/pages/ErrorPage"
 import ProductPage from './pages/ProductPage';
-import CartPage  from './pages/CartPage';
+import CartPage from './pages/CartPage';
 import OrdersPage from './pages/OrdersPage';
 import CreateStore from './pages/CreateStore';
 import StoreDashboard from './pages/StoreDashboard';
 import Store from './pages/Store';
 import MyProducts from './pages/MyProducts';
 import StoreOrders from './pages/StoreOrders';
-import AllReviews  from './pages/AllReviews';
+import AllReviews from './pages/AllReviews';
 import MyStore from './pages/MyStore';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import Api from './Api';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [authenticated, setAuthenticated] = useState(false);
+
 
   // useEffect(() => {
-  //   getUser();
+  //   console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID)
   // }, []);
 
-  // const getUser = async() => {
-  //   await Api.get('/auth/login/success',
-  //   {
-  //     headers:{
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //       "Access-Control-Allow-Credentials": true,
-  //     }
-  //   },
-  //   {
-  //     credentials:"include"
+  // const checkAuth = async () => {
+  //   await Api.get('http://localhost:8070/auth/check-authentication', {
+  //     withCredentials: true,
   //   })
   //     .then((response) => {
-  //       console.log(response)
-  //       if (response.status === 200) return response.json();
-  //       throw new Error("authentication has been failed!");
-  //     })
-  //     .then((resObject) => {
-  //       setUser(resObject.user);
+  //       setAuthenticated(true);
+  //       setUser(response.user)
   //     })
   //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
+  //       setAuthenticated(false)
+  //       console.log(err)
+  //     })
+  // }
 
 
   return (
     <>
+     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
       <BrowserRouter>
-        {/* <AuthProvider> */}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/product/:id" element={<ProductPage/>} />
-            <Route path = "/cart" element={<CartPage/>} />
-            <Route path ="/orders" element={<OrdersPage/>} />
-            <Route path ="/create-store" element={<CreateStore/>} />
-            <Route path="/dashboard" element={<StoreDashboard/>} />
-            <Route path="/:storeName" element = {<Store/>} />
-            <Route path="/my-products" element = {<MyProducts />} />
-            <Route path = "/store/orders" element ={<StoreOrders/>}/>
-            <Route path ="/all-reviews" element ={<AllReviews/>}/>
-            <Route path ="/my-store/profile" element={<MyStore/>} />
-
+            <Route path="/:storeName" element={<Store />} />
+            <Route path="/my-products" element={<MyProducts />} />
             <Route path="/error" element={<ErrorPage />} />
-            {/* <Route element={<PrivateRoute> <WorkSpace /></PrivateRoute>} path="/user-workspace" /> */}
-            <Route path = "/homepage" element={<ViewPage />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/cart" element={authenticated ? <CartPage /> : <Navigate to="/login" />} />
+            <Route path="/orders" element={authenticated ? <OrdersPage /> : <Navigate to="/login" />} />
+            <Route path="/create-store" element={authenticated ? <CreateStore /> : <Navigate to="/login" />} />
+            <Route path="/dashboard" element={authenticated ? <StoreDashboard /> : <Navigate to="/login" />} />
+            <Route path="/store/orders" element={authenticated ? <StoreOrders /> : <Navigate to="/login" />} />
+            <Route path="/all-reviews" element={authenticated ? <AllReviews /> : <Navigate to="/login" />} />
+            <Route path="/my-store/profile" element={authenticated ? <MyStore /> : <Navigate to="/login" />} />
+            <Route path="/homepage" element={authenticated ? <ViewPage /> : <Navigate to="/login" /> } />
           </Routes>
-        {/* </AuthProvider> */}
       </BrowserRouter>
+      </GoogleOAuthProvider>
     </>
   )
 }

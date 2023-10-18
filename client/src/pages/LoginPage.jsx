@@ -1,35 +1,66 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGoogle } from '@fortawesome/free-brands-svg-icons'
+import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import Api from '../Api'
 
 const LoginPage = () => {
-  const googleAuth = () => {
-    window.open(`${import.meta.env.VITE_API_BASE_URL_DEV}/auth/google`, "_self")
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const history = useNavigate()
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await Api.post('/auth/login', {
+        email,
+        password,
+      },
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status == 200) {
+        history('/homepage');
+      }
+    } catch (err) {
+      console.log(err)
+      if (err.response.status === 401) setError("Invalid credentials")
+
+    }
   }
-  
+
+  const handleGoogleAuth = async(response)=>{
+    //
+  }
+
   return (
     <div>
       <div className="flex justify-center items-center min-h-screen bg-slate-200">
         <div className="bg-white w-auto rounded-xl p-8 ">
+          {error && <div className='text-center text-red-500'>{error}</div>}
           <h1 className="text-zinc-600 text-xl p-4">Login To Your ShopLite</h1>
 
-          <form className="flex flex-col">
+          <form className="flex flex-col" onSubmit={handleSubmit}>
             <div className="p-2 flex justify-between">
-              <label for="email" className="text-zinc-600 m-2">Email</label>
+              <label  htmlFor="email" className="text-zinc-600 m-2">Email</label>
               <input
                 id="email"
                 type="email"
                 className="p-2 border border-zinc-600 rounded-md hover:border-violet-500 focus:outline-green-500"
+                onChange={e => setEmail(e.target.value)}
               />
             </div>
 
             <div className="p-2 flex justify-between">
-              <label for="password" className="text-zinc-600 m-2">Password</label>
+              <label htmlFor="password" className="text-zinc-600 m-2">Password</label>
               <input
                 id="password"
                 type="password"
                 className="p-2 border border-zinc-600 rounded-md hover:border-violet-500 focus:outline-green-500"
+                onChange={e => setPassword(e.target.value)}
               />
             </div>
 
@@ -38,9 +69,14 @@ const LoginPage = () => {
             </div>
           </form>
           <hr />
-          <div className='text-center pt-3'>
-            <p>or Login with</p>
-            <button onClick={googleAuth} className=" mt-3 py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-400 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"> <span className='pr-2'><FontAwesomeIcon icon={faGoogle} style={{color: "#d71919",}} /></span>Google</button>
+          <div className='pt-3'>
+            <p className='text-center font-bold'>or Login with</p>
+            <div className='pb-3'>
+              <GoogleLogin onSuccess={credentialResponse => {
+                console.log(credentialResponse);
+                handleGoogleAuth(credentialResponse)
+              }} />
+            </div>
             <button type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Demo Accounts</button>
 
             <br />
