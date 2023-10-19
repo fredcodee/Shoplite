@@ -1,8 +1,14 @@
-import React from 'react'
+import React,{useContext} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShop} from '@fortawesome/free-solid-svg-icons'
+import AuthContext from '../context/AuthContext'
 
 const Navbar = () => {
+  let { user, logoutUser } = useContext(AuthContext)
+
+  const handleLogout = async()=>{
+    await logoutUser();
+  }
   return (
     <div>
       <div className="relative border-b">
@@ -21,7 +27,7 @@ const Navbar = () => {
               <li>
                 <a className="w-full h-full text-green-600 flex md:items-center pl-6 md:pl-4 pr-4 py-1 hover:bg-gray-100" href="/dashboard">Store Dashboard</a>
               </li>
-              <li>
+              <li onClick={handleLogout}>
                 <a className="w-full h-full flex md:items-center pl-6 md:pl-4 pr-4 py-1 hover:bg-gray-100 text-red-500" href="#">Logout</a>
               </li>
             </ul>

@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { AuthProvider } from "./context/AuthContext";
+import PrivateRoute from './context/PrivateRoute';
 import HomePage from "../src/pages/HomePage"
 import LoginPage from "../src/pages/LoginPage"
 import RegisterPage from "../src/pages/RegisterPage"
@@ -16,36 +18,13 @@ import StoreOrders from './pages/StoreOrders';
 import AllReviews from './pages/AllReviews';
 import MyStore from './pages/MyStore';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import Api from './Api';
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [authenticated, setAuthenticated] = useState(false);
-
-
-  // useEffect(() => {
-  //   console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID)
-  // }, []);
-
-  // const checkAuth = async () => {
-  //   await Api.get('http://localhost:8070/auth/check-authentication', {
-  //     withCredentials: true,
-  //   })
-  //     .then((response) => {
-  //       setAuthenticated(true);
-  //       setUser(response.user)
-  //     })
-  //     .catch((err) => {
-  //       setAuthenticated(false)
-  //       console.log(err)
-  //     })
-  // }
-
-
   return (
     <>
-     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
       <BrowserRouter>
+      <AuthProvider>
+      <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -54,17 +33,19 @@ function App() {
             <Route path="/my-products" element={<MyProducts />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/product/:id" element={<ProductPage />} />
-            <Route path="/cart" element={authenticated ? <CartPage /> : <Navigate to="/login" />} />
-            <Route path="/orders" element={authenticated ? <OrdersPage /> : <Navigate to="/login" />} />
-            <Route path="/create-store" element={authenticated ? <CreateStore /> : <Navigate to="/login" />} />
-            <Route path="/dashboard" element={authenticated ? <StoreDashboard /> : <Navigate to="/login" />} />
-            <Route path="/store/orders" element={authenticated ? <StoreOrders /> : <Navigate to="/login" />} />
-            <Route path="/all-reviews" element={authenticated ? <AllReviews /> : <Navigate to="/login" />} />
-            <Route path="/my-store/profile" element={authenticated ? <MyStore /> : <Navigate to="/login" />} />
-            <Route path="/homepage" element={authenticated ? <ViewPage /> : <Navigate to="/login" /> } />
+            <Route path="/cart" element={<PrivateRoute>  <CartPage /> </PrivateRoute> } />
+            <Route path="/orders" element={<PrivateRoute>  <OrdersPage /> </PrivateRoute> } />
+            <Route path="/create-store" element={<PrivateRoute> <CreateStore /> </PrivateRoute> }/>
+            <Route path="/dashboard" element={<PrivateRoute>  <StoreDashboard /> </PrivateRoute> } />
+            <Route path="/store/orders" element={<PrivateRoute>  <StoreOrders /> </PrivateRoute> } />
+            <Route path="/all-reviews" element={<PrivateRoute>  <AllReviews /> </PrivateRoute> } />
+            <Route path="/my-store/profile" element={<PrivateRoute>  <MyStore /> </PrivateRoute> } />
+            <Route path="/homepage" element={<PrivateRoute> <ViewPage /></PrivateRoute> } />
           </Routes>
+          </GoogleOAuthProvider>
+        </AuthProvider>
       </BrowserRouter>
-      </GoogleOAuthProvider>
+      
     </>
   )
 }

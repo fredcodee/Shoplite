@@ -1,35 +1,17 @@
 import React from 'react'
-import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from "react";
+import AuthContext from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
-import Api from '../Api'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const history = useNavigate()
+  const { loginUser, error } = useContext(AuthContext);
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await Api.post('/auth/login', {
-        email,
-        password,
-      },
-        {
-          withCredentials: true,
-        }
-      );
-      if (response.status == 200) {
-        history('/homepage');
-      }
-    } catch (err) {
-      console.log(err)
-      if (err.response.status === 401) setError("Invalid credentials")
-
-    }
+    await loginUser(email, password);
   }
 
   const handleGoogleAuth = async(response)=>{

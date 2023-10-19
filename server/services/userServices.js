@@ -31,7 +31,7 @@ async function findAndVerifyUserCredentials(email, password) {
             return false;
         }
 
-        return true;
+        return user;
     } catch (error) {
         throw new Error(`Cant find and verify user ${error}`);
     }
