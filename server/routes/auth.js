@@ -42,9 +42,8 @@ router.post("/login", async (req, res) => {
 //google auth handler
 router.post('/google-auth', async(req,res)=>{
   try {
-    const googleToken = req.body.token
-    const decoded = decode(googleToken)
-    const userAuth = await userService.googleAuth(decoded.name, decoded.email, decoded.sub)
+    const {name, email, sub}= req.body
+    const userAuth = await userService.googleAuth(name, email, sub)
     const token =  await userService.generateToken(userAuth)
     return res.json({ request: "user details are valid", token: token })
   } catch (error) {

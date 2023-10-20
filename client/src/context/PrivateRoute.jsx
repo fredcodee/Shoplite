@@ -6,7 +6,7 @@ import Api from '../Api'
 
 const PrivateRoute = ({children, ...rest}) => {
     const [authenticated, setAuthenticated] = useState(false)
-    const token = localStorage.getItem('authTokens').replace(/"/g, '') || false
+    const token = localStorage.getItem('authTokens') || false
     let {user} = useContext(AuthContext)
 
 
@@ -21,7 +21,7 @@ const PrivateRoute = ({children, ...rest}) => {
       try {
         await Api.get('/auth/check-token', {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token.replace(/"/g, '')}`
           }
         })
         .then((response)=>{

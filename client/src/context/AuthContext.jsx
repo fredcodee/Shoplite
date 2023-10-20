@@ -81,6 +81,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+    const handleGoogleAuth = async (credentials) => {
+        try {
+            credentials = jwt_decode(credentials)
+            const data = {
+                name:`${credentials.given_name} ${credentials.family_name}`,
+                email: credentials.email,
+                sub:credentials.sub
+
+            }
+            await Api.post('/auth/google-auth', data)
+                .then(async(response) => {
+                    if (response.status == 200) {
+                        setAuthTokens(response.data.token);
+                        setUser(jwt_decode(response.data.token));
+                        localStorage.setItem('token', JSON.stringify(response.data.token));
+                        const user = await getUser()
+                        localStorage.setItem('user', JSON.stringify(user));
+                        history('/homepage')
+                    }
+                })
+        } catch (error) {
+            setError(error.response.data.message);
+        }
+    }
+
 
   const logoutUser = async() => {
     localStorage.removeItem('token');
@@ -94,6 +119,7 @@ export const AuthProvider = ({ children }) => {
     loginUser,
     logoutUser,
     registerUser,
+    handleGoogleAuth 
   };
 
   useEffect(() => {

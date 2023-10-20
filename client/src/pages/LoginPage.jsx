@@ -6,16 +6,12 @@ import { GoogleLogin } from '@react-oauth/google';
 const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { loginUser, error } = useContext(AuthContext);
+  const { loginUser, handleGoogleAuth,  error } = useContext(AuthContext);
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await loginUser(email, password);
-  }
-
-  const handleGoogleAuth = async(response)=>{
-    //
   }
 
   return (
@@ -55,8 +51,7 @@ const LoginPage = () => {
             <p className='text-center font-bold'>or Login with</p>
             <div className='pb-3'>
               <GoogleLogin onSuccess={credentialResponse => {
-                console.log(credentialResponse);
-                handleGoogleAuth(credentialResponse)
+                handleGoogleAuth(credentialResponse.credential)
               }} />
             </div>
             <button type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Demo Accounts</button>
