@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/UserModel')
+const Store =  require('../models/StoreModel')
 const bcrypt = require('bcrypt')
 
 
@@ -84,6 +85,19 @@ async function googleAuth(name, email, sub){
     }
 }
 
+async function getUserStore(userId){
+    try {
+        const store =  await Store.findOne({user_id:userId})
+        if(store){
+            return store
+        }
+        return false
+    } catch (error) {
+       throw new Error(`error getting user's store ${error}`) 
+    }
+
+}
+
 
 module.exports={generateToken,getUserById, findAndVerifyUserCredentials , addUserToDb, checkIfUserIsRegistered,
-addUserToDb, googleAuth}
+addUserToDb, googleAuth, getUserStore}
