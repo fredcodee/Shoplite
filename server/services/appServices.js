@@ -42,6 +42,24 @@ async function addProduct(name, description,stock, price, image, storeId){
     }
 }
 
+async function removeProduct(productId){
+    try {
+        await Product.findByIdAndDelete(productId)
+        return true 
+    } catch (error) {
+        throw new Error(`Error deleting product ${error.message}`)
+    }
+}
 
-module.exports = {createStore, addProduct}
+async function getAllStoreProducts(storeId){
+    try {
+        const products = await Product.find({store_id:storeId})
+        return products
+    } catch (error) {
+        throw new Error(`Error getting all products in store  ${error.message}`)
+    }
+}
+
+
+module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts}
 
