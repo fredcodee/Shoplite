@@ -5,5 +5,6 @@ const {userAuth} = require('../middlewares/auth');
 
 
 router.get('/profile',userAuth, userController.getUserProfile)
+router.get('/my-store', userAuth, userController.getUserStoreProfile)
 
 module.exports= router

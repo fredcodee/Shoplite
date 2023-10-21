@@ -11,5 +11,14 @@ const getUserProfile = async (req, res) =>{
         errorHandler.errorHandler(error, res)
     }
 }
+const getUserStoreProfile = async(req,res) =>{
+ try {
+    const store = await userService.getUserStore(req.user._id)
+    if (store) return res.json(store)
+    return res.status(401).json({message: "user has no store"})
+ } catch (error) {
+    errorHandler.errorHandler(error, res)
+ }
+}
 
-module.exports={getUserProfile}
+module.exports={getUserProfile, getUserStoreProfile}

@@ -20,5 +20,21 @@ const createStore = async(req, res) =>{
     
 }
 
+const addProduct = async(req, res)=>{
+    try {
+        const {name, description, stock, price, image, storeId} =  req.body
+        //check if user has and own the store
+        const storeCheck = await userController.getUserStore(req.user._id)
+        if(storeCheck && storeCheck._id == storeId){
+            const product =  await appController.addProduct(name, description, stock,price,image,storeId)
+            return res.json(product)
+        }
+        return res.status(401).json({massage:"unauthorized access"})
 
-module.exports={health, createStore}
+    } catch (error) {
+        errorHandler.errorHandler(error, res)
+    }
+}
+
+
+module.exports={health, createStore, addProduct}
