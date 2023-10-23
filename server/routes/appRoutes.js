@@ -10,6 +10,6 @@ router.post('/create-store',userAuth, appcontroller.createStore)
 router.post('/add-product', userAuth, appcontroller.addProduct)
 router.post('/remove-product', userAuth, appcontroller.removeProduct)
 router.post('/store/all-products', appcontroller.viewStoreProducts)
-//router.post('/store/products/image/upload',parser.single('image'), appcontroller.addStoreProfileImage)
+router.post('/store/products/images/upload',parser.array('images', 3), appcontroller.uploadProductImages)
 
 module.exports= router

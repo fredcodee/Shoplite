@@ -121,8 +121,7 @@ const checkUserHasOwnStore = async(userId, storeId) =>{
 
 async function addUpdateStoreImage(storeId, imageId){
     try {
-        const store  =  await Store.findById(storeId)
-        await Store.updateOne({ _id: store._id }, {
+        await Store.updateOne({ _id: storeId}, {
             $set: {
                 image: imageId
             }

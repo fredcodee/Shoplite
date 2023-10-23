@@ -77,5 +77,20 @@ async function saveImages(imageName, path){
 }
 
 
-module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages}
+async function addImagesToProducts(productId, imageId) {
+    try {
+        const product = await Product.findById(productId)
+        if (!product) {
+            throw new Error('Product not found');
+        }
+        product.images.push(imageId);
+        await product.save();
+        return true
+    } catch (error) {
+        throw new Error(`Error updating product images: ${error}`);
+    }
+}
+
+
+module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts}
 

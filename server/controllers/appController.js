@@ -82,5 +82,22 @@ const viewStoreProducts = async(req,res)=>{
     }
 }
 
+const uploadProductImages = async(req,res)=>{
+    try {
+        const images  = req.files
+        const {productId} = req.body
 
-module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage }
+        //save image
+        for(const image of images){
+            const saveImage = await appServices.saveImages(image.filename, image.path)
+            if(saveImage) await appServices.addImagesToProducts(productId, saveImage._id)   
+        }
+        //save imaages to product
+        return res.json({massage:"images added to product"})
+    } catch (error) {
+        errorHandler.errorHandler(error, res)
+    }
+}
+
+
+module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage, uploadProductImages}
