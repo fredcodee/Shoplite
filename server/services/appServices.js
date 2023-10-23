@@ -1,6 +1,8 @@
 const Store = require('../models/StoreModel')
 const Product = require('../models/ProductModel')
+const Image =  require('../models/ImageModel')
 const User = require('../models/UserModel')
+
 
 
 async function createStore(name, bio, image, userId) {
@@ -61,5 +63,19 @@ async function getAllStoreProducts(storeId){
 }
 
 
-module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts}
+async function saveImages(imageName, path){
+    try {
+        const newImage = new Image({
+            name:imageName,
+            url:path
+        })
+        await newImage.save()
+        return newImage
+    } catch (error) {
+        throw new Error(`Error saving images ${error.message}`)
+    }
+}
+
+
+module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages}
 

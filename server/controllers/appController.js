@@ -20,12 +20,33 @@ const createStore = async(req, res) =>{
     
 }
 
+const addStoreProfileImage = async(req, res)=>{
+    try {
+        const file = req.file;
+        const {storeId}= req.body;
+
+        //error handling if file is not jpg or jpeg
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            return res.status(400).send('Please upload a image file')
+        }
+        // save image
+        const saveImage =  await appServices.saveImages(file.filename,  file.path)
+        if(saveImage){
+            await userServices.addUpdateStoreImage(storeId, saveImage._id)
+            return res.json({massage:"store image updated"})
+        }
+        return res.json(file)
+    } catch (error) {
+        errorHandler.errorHandler(error, res)
+    }
+}
+
 const addProduct = async(req, res)=>{
     try {
         const {name, description, stock, price, image, storeId} =  req.body
         //check if user has and own the store
-        const storeCheck = await userServices.getUserStore(req.user._id)
-        if(storeCheck && storeCheck._id == storeId){
+        const storeCheck = await userServices.checkUserHasOwnStore(req.user._id, storeId)
+        if(storeCheck){
             const product =  await appServices.addProduct(name, description, stock,price,image,storeId)
             return res.json(product)
         }
@@ -40,8 +61,8 @@ const addProduct = async(req, res)=>{
 const removeProduct = async(req, res)=>{
     try {
         const {productId, storeId} = req.body
-        const storeCheck = await userServices.getUserStore(req.user._id)
-        if(storeCheck && storeCheck._id == storeId){
+        const storeCheck = await userServices.checkUserHasOwnStore(req.user._id, storeId)
+        if(storeCheck){
             await appServices.removeProduct(productId)
             return res.json({message: "Product removed successfully"})
         }
@@ -62,4 +83,4 @@ const viewStoreProducts = async(req,res)=>{
 }
 
 
-module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts}
+module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage }

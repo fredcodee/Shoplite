@@ -99,5 +99,44 @@ async function getUserStore(userId){
 }
 
 
+  //check if has and own the store
+const checkUserHasOwnStore = async(userId, storeId) =>{
+    try {
+        const storeCheck = await getUserStore(userId)
+        if(storeCheck && !storeId){
+            return storeCheck
+        }
+        else if(storeCheck && storeCheck._id == storeId){
+            return true
+        }
+        return false
+      
+    } catch (error) {
+      throw new Error(`Error checking if user owns store/ has access to the store  ${error}`)
+    }
+  }
+
+
+
+
+async function addUpdateStoreImage(storeId, imageId){
+    try {
+        const store  =  await Store.findById(storeId)
+        await Store.updateOne({ _id: store._id }, {
+            $set: {
+                image: imageId
+            }
+        });
+        return true
+
+    } catch (error) {
+        throw new Error(`Error updating store image ${error}`)
+    }
+
+}
+
+
+
+
 module.exports={generateToken,getUserById, findAndVerifyUserCredentials , addUserToDb, checkIfUserIsRegistered,
-addUserToDb, googleAuth, getUserStore}
+addUserToDb, googleAuth, getUserStore, addUpdateStoreImage, checkUserHasOwnStore }

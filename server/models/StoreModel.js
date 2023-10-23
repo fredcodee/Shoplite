@@ -22,8 +22,9 @@ const storeSchema = new mongoose.Schema({
         type:Date,
         default:Date.now
     },
-    image: {
-        type: String 
+    image:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'Image'
     }
 })
 

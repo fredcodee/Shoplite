@@ -17,9 +17,10 @@ const productSchema = new mongoose.Schema({
         type:Number,
         default:null
     },
-    image:{
-        type:String
-    },
+    images:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'Image'
+    }],
     store_id:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Store',
