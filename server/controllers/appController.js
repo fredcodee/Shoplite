@@ -9,10 +9,10 @@ const health = async (req, res) => {
 
 const createStore = async(req, res) =>{
     try {
-        const {name, bio, image} = req.body
+        const {name, bio} = req.body
         const checkIfUserHasStore = await  userServices.getUserStore(req.user._id)
         if(checkIfUserHasStore) return res.status(400).json({message: 'User already has a store'})
-        const createNewStore = await appServices.createStore(name,bio,image,req.user._id )
+        const createNewStore = await appServices.createStore(name,bio,req.user._id )
         return res.json(createNewStore)
     } catch (error) {
         errorHandler.errorHandler(error, res)
@@ -25,6 +25,7 @@ const addStoreProfileImage = async(req, res)=>{
         const file = req.file;
         const {storeId}= req.body;
 
+        console.log(file)
         //error handling if file is not jpg or jpeg
         if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
             return res.status(400).send('Please upload a image file')

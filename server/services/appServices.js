@@ -5,7 +5,7 @@ const User = require('../models/UserModel')
 
 
 
-async function createStore(name, bio, image, userId) {
+async function createStore(name, bio, userId) {
     try {
         const checkUniqueName = await Store.findOne({ name: name });
         if (checkUniqueName) {
@@ -15,8 +15,7 @@ async function createStore(name, bio, image, userId) {
         const newStore = new Store({
             name: name,
             bio: bio,
-            user_id: userId,
-            image: image || null,
+            user_id: userId
         });
 
         await newStore.save();
