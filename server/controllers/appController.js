@@ -25,7 +25,6 @@ const addStoreProfileImage = async(req, res)=>{
         const file = req.file;
         const {storeId}= req.body;
 
-        console.log(file)
         //error handling if file is not jpg or jpeg
         if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
             return res.status(400).send('Please upload a image file')

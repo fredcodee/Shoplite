@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from './context/PrivateRoute';
+import StoreOwner from './context/StoreOwner';
 import HomePage from "../src/pages/HomePage"
 import LoginPage from "../src/pages/LoginPage"
 import RegisterPage from "../src/pages/RegisterPage"
@@ -11,6 +12,7 @@ import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
 import OrdersPage from './pages/OrdersPage';
 import CreateStore from './pages/CreateStore';
+import CreateProduct from './pages/CreateProduct';
 import StoreDashboard from './pages/StoreDashboard';
 import Store from './pages/Store';
 import MyProducts from './pages/MyProducts';
@@ -36,6 +38,7 @@ function App() {
             <Route path="/cart" element={<PrivateRoute>  <CartPage /> </PrivateRoute> } />
             <Route path="/orders" element={<PrivateRoute>  <OrdersPage /> </PrivateRoute> } />
             <Route path="/create-store" element={<PrivateRoute> <CreateStore /> </PrivateRoute> }/>
+            <Route path="/add/product" element = {<StoreOwner> <CreateProduct/> </StoreOwner>} />
             <Route path="/dashboard" element={<PrivateRoute>  <StoreDashboard /> </PrivateRoute> } />
             <Route path="/store/orders" element={<PrivateRoute>  <StoreOrders /> </PrivateRoute> } />
             <Route path="/all-reviews" element={<PrivateRoute>  <AllReviews /> </PrivateRoute> } />

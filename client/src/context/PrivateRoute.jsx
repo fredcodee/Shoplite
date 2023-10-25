@@ -6,7 +6,7 @@ import Api from '../Api'
 
 const PrivateRoute = ({children, ...rest}) => {
     const [authenticated, setAuthenticated] = useState(false)
-    const token = localStorage.getItem('authTokens') || false
+    const token = localStorage.getItem('token') || false
     let {user} = useContext(AuthContext)
 
 

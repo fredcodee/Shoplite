@@ -63,7 +63,6 @@ const CreateStore = () => {
         })
 
     } catch (error) {
-      console.log(error)
       setError(error.data.message)
     }
   }
