@@ -7,9 +7,11 @@ import sample3 from '../assets/images/sample3.jpg'
 
 const ProductLists = () => {
   const [showPopUpForEditProduct, setShowPopUpForEditProduct] =useState(false)
+  const [showPopUpForDeleteProduct, setShowPopUpForDeleteProduct] = useState(false);
   const storeId = `${localStorage.getItem('store')}`
   const token = localStorage.getItem('token').replace(/"/g, '');
   const [products, setProducts] = useState([])
+  const [selectedProduct, setSelectedProduct] = useState('')
   const [error, setError] = useState(null)
   const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
 
@@ -19,6 +21,10 @@ const ProductLists = () => {
 
     const togglePopUpForEditProduct= () =>{
         setShowPopUpForEditProduct(!showPopUpForEditProduct)
+    }
+
+    const togglePopUpForDeleteProduct = () => {
+      setShowPopUpForDeleteProduct(!showPopUpForDeleteProduct);
     }
 
     const getProducts =async()=>{
@@ -35,8 +41,28 @@ const ProductLists = () => {
         setError(error.response.data.message)
       }
     }
+
+    const deleteProduct= async()=>{
+      try {
+        await Api.post('/api/remove-product', {productId:selectedProduct, storeId:storeId},{
+          headers:{
+            Authorization: token
+          }
+        })
+        .then(async(response)=>{
+          if(response.status == 200) {
+            getProducts()
+            togglePopUpForDeleteProduct()
+          }
+        })
+        
+      } catch (error) {
+        setError(error)
+      }
+    }
   return (
     <div>
+      {error && <div className='text-red-500 p-2'><p>{error}</p></div>}
         <div className='grid grid-cols-6 gap-4 pt-5'>
           {products.length > 1 ? (
             (products.map((product, index)=>(
@@ -51,7 +77,13 @@ const ProductLists = () => {
                 {/* if user == store owner show this */}
               <div className='flex gap-4'>
                 <p className='hover:cursor-pointer hover:text-xl' onClick={togglePopUpForEditProduct}><FontAwesomeIcon icon={faPenToSquare} style={{color: "#dd843c",}}/></p>
-                <p className='hover:cursor-pointer hover:text-xl'><FontAwesomeIcon icon={faTrash} style={{color: "#cb2a2a",}} /></p>
+                <p className='hover:cursor-pointer hover:text-xl'
+                   onClick={() => {
+                    togglePopUpForDeleteProduct();
+                    setSelectedProduct(product._id);
+                  }}
+                   >
+                    <FontAwesomeIcon icon={faTrash} style={{color: "#cb2a2a",}} /></p>
               </div>
               </div>
             )))
@@ -59,7 +91,7 @@ const ProductLists = () => {
         </div>
 
           {/* for popup for editing product*/}
-       {showPopUpForEditProduct&& <PopUp
+          {showPopUpForEditProduct&& <PopUp
                 content={<>
                     <div id="staticModal" data-modal-backdrop="static" tabIndex="-1" aria-hidden="true" className="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
                         <div className="relative w-full max-w-2xl max-h-full" style={{ margin: "auto" }}>
@@ -120,6 +152,40 @@ const ProductLists = () => {
                     </div>
                 </>}
             />}
+
+          {/* delete product */}
+           {/* popup for delete ticket */}
+      {showPopUpForDeleteProduct && <PopUp
+        content={<>
+          <div id="staticModal" data-modal-backdrop="static" tabIndex="-1" aria-hidden="true" className="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div className="relative w-full max-w-2xl max-h-full" style={{ margin: "auto" }}>
+              <div className="relative bg-gray-200  rounded-lg shadow dark:bg-gray-700">
+
+                <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600 text-center">
+                  <h3 className="text-xl font-semibold text-red-700 dark:text-white">
+                    Delete this Product <br />
+                  </h3>
+                  <button type="button" onClick={togglePopUpForDeleteProduct} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="staticModal">
+                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span className="sr-only">Close modal</span>
+                  </button>
+                </div>
+                <div className="pt-6 space-y-6 text-center font-bold ">
+                  <div>
+                    <p>Confirm Action ?</p>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'center', paddingTop: '1rem' }}>
+                  <button type="button" onClick={deleteProduct} className="text-white bg-red-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Yes</button>
+                  <button type="button" onClick={togglePopUpForDeleteProduct} className="text-white bg-green-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">No</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>}
+      />}
     </div>
   )
 }
