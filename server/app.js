@@ -18,6 +18,7 @@ app.use(cors())
 app.use('/api', appRoutes)
 app.use('/auth', authRoutes)
 app.use('/api/user', userRoutes)
+app.use('/images', express.static('images')); //get static images
 
 app.listen(process.env.PORT,()=>{
     console.log("server is up on port: " + process.env.PORT)

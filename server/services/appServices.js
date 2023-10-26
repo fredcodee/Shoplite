@@ -54,7 +54,7 @@ async function removeProduct(productId){
 
 async function getAllStoreProducts(storeId){
     try {
-        const products = await Product.find({store_id:storeId})
+        const products = await Product.find({store_id:storeId}).populate('images')
         return products
     } catch (error) {
         throw new Error(`Error getting all products in store  ${error.message}`)

@@ -1,83 +1,62 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare,faTrash} from '@fortawesome/free-solid-svg-icons'
+import Api from '../Api';
 import PopUp from '../components/PopUp';
-import sample1 from '../assets/images/sample1.png'
-import sample2 from '../assets/images/sample2.jpg'
 import sample3 from '../assets/images/sample3.jpg'
-import sample4 from '../assets/images/sample4.jpg'
-import sample5 from '../assets/images/sample5.jpg'
-import sample6 from '../assets/images/sample6.jpg'
 
 const ProductLists = () => {
   const [showPopUpForEditProduct, setShowPopUpForEditProduct] =useState(false)
+  const storeId = `${localStorage.getItem('store')}`
+  const token = localStorage.getItem('token').replace(/"/g, '');
+  const [products, setProducts] = useState([])
+  const [error, setError] = useState(null)
+  const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
+
+  useEffect(()=>{
+    getProducts()
+  },[])
 
     const togglePopUpForEditProduct= () =>{
         setShowPopUpForEditProduct(!showPopUpForEditProduct)
     }
+
+    const getProducts =async()=>{
+      try {
+        await Api.post('/api/store/all-products', {storeId:storeId},{
+          headers:{
+            Authorization: token
+          }
+        })
+        .then((response)=>{
+          if(response.status == 200) setProducts(response.data)
+        })
+      } catch (error) {
+        setError(error.response.data.message)
+      }
+    }
   return (
     <div>
         <div className='grid grid-cols-6 gap-4 pt-5'>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="/product/11">
-              <img src={sample1} alt="" className='h-40 w-52'/>
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
-              <img src={sample2} alt="" className='h-40 w-52'/>
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
-              <img src={sample3} alt="" className='h-40 w-52'/>
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
-              <img src={sample4} alt="" className='h-40 w-52'/>
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
-              <img src={sample5} alt=""  className='h-40 w-52'/>
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
-              <img src={sample6} alt="" className='h-40 w-52' />
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-              {/* if user == store owner show this */}
+          {products.length > 1 ? (
+            (products.map((product, index)=>(
+              <div  key={index} className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
+                <a href={`/product/${product._id}`}>
+                <img src={`${imageSrc}/images/${product.images[0].name}` || sample3} alt="" className='h-40 w-52'/>
+                <div>
+                  <h3 className='font-bold text-lg'>{product.name}</h3>
+                  <p>$ <span>{product.price}</span></p>
+                </div>
+                </a>
+                {/* if user == store owner show this */}
               <div className='flex gap-4'>
                 <p className='hover:cursor-pointer hover:text-xl' onClick={togglePopUpForEditProduct}><FontAwesomeIcon icon={faPenToSquare} style={{color: "#dd843c",}}/></p>
                 <p className='hover:cursor-pointer hover:text-xl'><FontAwesomeIcon icon={faTrash} style={{color: "#cb2a2a",}} /></p>
               </div>
-            </div>
-          </div>
+              </div>
+            )))
+          ) : (<div> <h1 className='text-center pt-6 text-cyan-800 text-lg'>No Products yet ...</h1></div>) }            
+        </div>
 
           {/* for popup for editing product*/}
        {showPopUpForEditProduct&& <PopUp
