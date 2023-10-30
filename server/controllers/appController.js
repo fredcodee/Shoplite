@@ -98,6 +98,30 @@ const uploadProductImages = async(req,res)=>{
         errorHandler.errorHandler(error, res)
     }
 }
+const getProduct = async(req, res)=>{
+    try {
+        const {productId} = req.body
+        const response =  await appServices.getProductDetails(productId)
+        return res.json(response)
+
+    } catch (error) {
+        errorHandler.errorHandler(error, res)
+    }
+}
+
+const editProduct = async (req, res) => {
+    try {
+        const { storeId, productId, name, description, stock, price, images } = req.body
+        const storeCheck = await userServices.checkUserHasOwnStore(req.user._id, storeId)
+        if (storeCheck) {
+            const response = await appServices.updateProductDetails(productId, name, description, stock, price, images)
+            return res.json(response)
+        }
+        return res.status(401).json({massage:"unauthorized access"})
+    } catch (error) {
+        errorHandler.errorHandler(error, res)
+    }
+}
 
 
-module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage, uploadProductImages}
+module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage, uploadProductImages, getProduct,editProduct }

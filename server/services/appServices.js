@@ -86,10 +86,40 @@ async function addImagesToProducts(productId, imageId) {
         await product.save();
         return true
     } catch (error) {
-        throw new Error(`Error updating product images: ${error}`);
+        throw new Error(`Error updating product images: ${error.message}`);
+    }
+}
+
+async function getProductDetails(productId){
+    try {
+        const product = await Product.findById(productId).populate('images')
+        if (!product) {
+            throw new Error('Product not found');
+        }
+
+        return product
+
+    } catch (error) {
+        throw new Error(`Error getting product details ${error.message}`)
+    }
+}
+
+async function updateProductDetails(productId, name, description, stock, price, images){
+    try {
+        const product = await Product.findById(productId)
+        product.name = name;
+        product.description = description;
+        product.stock = stock;
+        product.price = price;
+        product.images = images || product.images;
+        await product.save()
+        return product
+
+    } catch (error) {
+        throw new Error(`Error editing product details ${error.message}`)
     }
 }
 
 
-module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts}
+module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails}
 
