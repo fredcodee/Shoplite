@@ -51,6 +51,7 @@ const StoreDashboard = () => {
             {store ? 
            ( <React.Fragment>
             <DashboardNavBar />
+            {error && <div className='text-red-500 p-2 text-center'><p>{error}</p></div>}
             <div className='container mx-auto pt-3'>
                 <div className='text-center pt-5'>
                     <h1>Your Store Summary</h1>

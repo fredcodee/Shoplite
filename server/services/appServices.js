@@ -1,6 +1,8 @@
 const Store = require('../models/StoreModel')
 const Product = require('../models/ProductModel')
 const Image =  require('../models/ImageModel')
+const Cart =  require('../models/CartModel')
+const Order =  require('../models/OrderModel')
 const User = require('../models/UserModel')
 
 
@@ -120,6 +122,56 @@ async function updateProductDetails(productId, name, description, stock, price, 
     }
 }
 
+async function cart(storeId, amount, productId,quantity, userId){
+    try{
+        const newCart = new Cart({
+            quantity:quantity,
+            amount: amount,
+            product_id:productId,
+            store_id:storeId,
+            user_id:userId
+        })
+        await newCart.save()
+        return newCart
 
-module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails}
+    } catch (error) {
+        throw new Error(`Error add items to cart ${error.message}`)
+    }
+}
+async function order(email, address, status, storeId, userId, cartId){
+    try{
+        const newOrder = new Order({
+            email:email,
+            address:address,
+            status:status,
+            store_id:storeId,
+            user_id:userId,
+            cart_id:cartId
+        })
+
+        await newOrder.save()
+        return newOrder
+
+    }catch (error) {
+        throw new Error(`Error add items to order ${error.message}`)
+    }
+}
+
+async function getStoreOrders(storeId){
+    try{
+        const orders =  await Order.find({store_id: storeId}) .populate({
+            path: 'cart_id',
+            populate: {
+              path: 'product_id', // Path to the product reference within the cart object
+            },
+          });
+        return orders
+    }catch (error) {
+        throw new Error(`Error getting store orders ${error.message}`)
+    }
+}
+
+
+module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails, 
+    cart, order, getStoreOrders}
 

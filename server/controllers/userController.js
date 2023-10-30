@@ -1,4 +1,5 @@
 const userServices =  require("../services/userServices")
+const appServices = require('../services/appServices')
 const errorHandler = require("../middlewares/errorHandler")
 
 
@@ -35,4 +36,36 @@ const storeDashBoard =async(req, res) =>{
     }
 }
 
-module.exports={getUserProfile, getUserStoreProfile, storeDashBoard}
+
+
+const addToCart = async(req, res)=>{
+    try{
+        const{ storeId, amount, productId, quantity, userId} = req.body
+        const addToCart = await appServices.cart(storeId, amount, productId, quantity,userId)
+        return res.json(addToCart)
+    } catch(error){
+        errorHandler.errorHandler(error, res)
+    }
+}
+
+const order = async (req, res) => {
+    try {
+        const data = req.body.data;
+
+        if (!Array.isArray(data)) {
+            return res.status(400).json({ error: 'Data must be an array of carted items' });
+        }
+
+        for (const orderData of data) {
+            const { email, address, status, storeId, userId, cartId } = orderData;
+            await appServices.order(email, address, status, storeId, userId, cartId);
+        }
+
+        return res.json({ message: 'Orders placed successfully' });
+    } catch (error) {
+        errorHandler.errorHandler(error, res);
+    }
+}
+
+
+module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order}

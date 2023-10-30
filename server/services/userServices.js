@@ -160,7 +160,7 @@ async function dashboardProps(storeId){
             }
           }).populate('cart_id')
 
-          const todayTotalRevenue = 0
+          let todayTotalRevenue = 0
           if(todayOrders.length > 0){
             for(const order of todayOrders){
                 todayTotalRevenue += order.cart_id.amount
@@ -185,7 +185,7 @@ async function dashboardProps(storeId){
             },
         }).populate('cart_id')
 
-        const weekTotalRevenue = 0
+        let weekTotalRevenue = 0
           if(weekly.length > 0){
             for(const order of weekly){
                 weekTotalRevenue += order.cart_id.amount

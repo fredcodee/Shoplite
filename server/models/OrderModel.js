@@ -4,12 +4,12 @@ const orderSchema = new mongoose.Schema({
     email:{
         type:String,
      },
-     Address:{
+     address:{
         type:String,
         default:null
      },
      status:{
-        type:String, //processing, to ship, completed cancelled
+        type:String, //processing, shiped, completed cancelled
         required: true
      },
      store_id:{

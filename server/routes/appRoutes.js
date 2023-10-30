@@ -13,5 +13,5 @@ router.post('/store/all-products', appcontroller.viewStoreProducts)
 router.post('/store/products/images/upload',parser.array('images', 3), appcontroller.uploadProductImages)
 router.post('/store/product', appcontroller.getProduct)
 router.post('/store/product/edit', userAuth, appcontroller.editProduct)
-
+router.post('/store/all/orders', userAuth, appcontroller.storeOrders)
 module.exports= router
