@@ -6,10 +6,13 @@ import Api from '../Api'
 const StoreDashboard = () => {
     const [store, setStore] = useState(false)
     const [error, setError] = useState(null)
+    const[storeSummary, setStoreSummary] = useState([])
     const token = localStorage.getItem('token').replace(/"/g, '');
+    const storeId = `${localStorage.getItem('store')}`
 
     useEffect(() => {
-        getUserStore()
+        getUserStore(),
+        dashboard()
     }, [])
 
     const getUserStore = async () => {
@@ -28,6 +31,21 @@ const StoreDashboard = () => {
             setError(error.message)
         }
     }
+
+    const dashboard = async()=>{
+        try {
+            await Api.post('/api/user/store/dashboard', {storeId:storeId},{
+                headers:{
+                    Authorization:token
+                }
+            })
+            .then((response)=>{
+                if(response.status == 200) setStoreSummary(response.data)
+            })
+        } catch (error) {
+            setError(error.message)
+        }
+    }
     return (
         <div>
             {store ? 
@@ -38,11 +56,11 @@ const StoreDashboard = () => {
                     <h1>Your Store Summary</h1>
                     <div className="grid grid-cols-2 pt-3">
                         <div className='... p-3 border-solid border-2 border-gray-100 rounded-full'>
-                            <p className='text-6xl'>$ <span>1,999.00</span></p>
+                            <p className='text-6xl'>$ <span>{storeSummary.total_revenue}</span></p>
                             <p>Total Revenue</p>
                         </div>
                         <div className='... p-3 border-2 border-gray-100 rounded-full'>
-                            <p className='text-6xl'> <span>899</span></p>
+                            <p className='text-6xl'> <span>{storeSummary.total_orders_completed}</span></p>
                             <p>Orders Completed</p>
                         </div>
                     </div>
@@ -51,13 +69,13 @@ const StoreDashboard = () => {
                     <div>
                         <h1>Today's sales</h1>
                         <div>
-                            <p className='text-4xl'>$ <span>1,999.00</span></p>
+                            <p className='text-4xl'>$ <span>{storeSummary.today_sales}</span></p>
                         </div>
                     </div>
                     <div className='pt-3'>
                         <h1>Number of orders</h1>
                         <div>
-                            <p className='text-4xl'>10</p>
+                            <p className='text-4xl'>{storeSummary.today_orders}</p>
                         </div>
                     </div>
                 </div>
@@ -66,13 +84,13 @@ const StoreDashboard = () => {
                     <div>
                         <h1>This Week </h1>
                         <div>
-                            <p className='text-4xl'>$ <span>4,000.08</span></p>
+                            <p className='text-4xl'>$ <span>{storeSummary.week_sale}</span></p>
                         </div>
                     </div>
                     <div className='pt-3'>
                         <h1>Number of orders</h1>
                         <div>
-                            <p className='text-4xl'>29</p>
+                            <p className='text-4xl'>{storeSummary.week_orders}</p>
                         </div>
                     </div>
                 </div>

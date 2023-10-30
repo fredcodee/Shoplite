@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/UserModel')
 const Store =  require('../models/StoreModel')
+const Order =  require('../models/OrderModel')
 const bcrypt = require('bcrypt')
 
 
@@ -112,7 +113,7 @@ const checkUserHasOwnStore = async(userId, storeId) =>{
         return false
       
     } catch (error) {
-      throw new Error(`Error checking if user owns store/ has access to the store  ${error}`)
+      throw new Error(`Error checking if user owns store/ has access to the store  ${error.message}`)
     }
   }
 
@@ -129,13 +130,87 @@ async function addUpdateStoreImage(storeId, imageId){
         return true
 
     } catch (error) {
-        throw new Error(`Error updating store image ${error}`)
+        throw new Error(`Error updating store image ${error.message}`)
     }
 
+}
+
+
+async function dashboardProps(storeId){
+    try {
+        // total orders and total revenue
+        const orders =  await Order.find({store_id: storeId, status:"completed"}).populate('cart_id')
+        const totalRevenue = 0
+        if(orders.length > 0 ){
+            for(const order of orders){
+                totalRevenue += order.cart_id.amount
+            }
+        }
+
+        // todays sales revenue
+        const today = new Date(); // Get the current date
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1); 
+
+        const todayOrders =  await Order.find({ store_id: storeId,
+            date: {
+              $gte: today, // Greater than or equal to today
+              $lt: tomorrow, // Less than the next day (midnight)
+            }
+          }).populate('cart_id')
+
+          const todayTotalRevenue = 0
+          if(todayOrders.length > 0){
+            for(const order of todayOrders){
+                todayTotalRevenue += order.cart_id.amount
+            }
+          }
+
+        //weekly sales
+        const startOfWeek = new Date(today); 
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        // Calculate the number of days to subtract to get to the previous Sunday
+        const daysToSunday = today.getDay();
+        startOfWeek.setDate(today.getDate() - daysToSunday);
+
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6); // Add 6 days to get to Saturday
+
+        const weekly  = await Order.find({store_id:storeId,
+            date: {
+                $gte: startOfWeek, 
+                $lte: endOfWeek,
+            },
+        }).populate('cart_id')
+
+        const weekTotalRevenue = 0
+          if(weekly.length > 0){
+            for(const order of weekly){
+                weekTotalRevenue += order.cart_id.amount
+            }
+          }
+
+
+    const data = {
+        total_orders_completed: orders.length,
+        total_revenue: totalRevenue,
+        today_sales: todayTotalRevenue,
+        today_orders: todayOrders.length,
+        week_sale:weekTotalRevenue,
+        week_orders: weekly.length
+
+    }
+    return data
+        
+    } catch (error) {
+       throw new Error(`Error getting props for store dashboard ${error.message}`) 
+    }
 }
 
 
 
 
 module.exports={generateToken,getUserById, findAndVerifyUserCredentials , addUserToDb, checkIfUserIsRegistered,
-addUserToDb, googleAuth, getUserStore, addUpdateStoreImage, checkUserHasOwnStore }
+addUserToDb, googleAuth, getUserStore, addUpdateStoreImage, checkUserHasOwnStore, dashboardProps }

@@ -10,6 +10,7 @@ const parser = require('../middlewares/multer')
 router.get('/profile',userAuth, userController.getUserProfile)
 router.get('/my-store', userAuth, userController.getUserStoreProfile)
 router.post('/store/profile/image/upload',parser.single('image'), appController.addStoreProfileImage)
+router.post('/store/dashboard', userAuth, userController.storeDashBoard)
 
 
 

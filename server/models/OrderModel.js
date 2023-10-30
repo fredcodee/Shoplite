@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const orderSchema = new mongoose({
+const orderSchema = new mongoose.Schema({
     email:{
         type:String,
      },
@@ -8,22 +8,14 @@ const orderSchema = new mongoose({
         type:String,
         default:null
      },
-     quantity:{
-        type:Number,
-        required
-     },
      status:{
-        type:String //processing, to ship, completed cancelled
-     },
-     product_id:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Product',
-        required:true
+        type:String, //processing, to ship, completed cancelled
+        required: true
      },
      store_id:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Store',
-        required
+        required: true
     },
     date:{
         type:Date,
@@ -33,6 +25,10 @@ const orderSchema = new mongoose({
         type: mongoose.Schema.Types.ObjectId,
         ref:'User',
         default:null
+    },
+    cart_id:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref:'Cart',
     }
 })
 
