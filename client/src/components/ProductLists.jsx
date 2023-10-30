@@ -91,20 +91,52 @@ const ProductLists = () => {
   const editProduct = async () => {
     try {
       const data = {
+        storeId:storeId,
+        productId: selectedProduct._id,
         name: name || selectedProduct.name,
         description: description || selectedProduct.description,
         stock: parseInt(stock, 10) || selectedProduct.stock,
         price: parseInt(price, 10) || selectedProduct.price,
-        images: selectedImages,
-        newImages:newImages
+        images: selectedImages
       }
-      //update product
-      //update images
-      //add new images
-
-      console.log(data)
+      await Api.post('/api/store/product/edit', data, {
+        headers: {
+          Authorization: token
+        }
+      })
+        .then(async (response) => {
+          if (response.status == 200) {
+            if (newImages.length > 0) {
+              //add new images
+              const formData = new FormData();
+              for (const image of newImages) {
+                formData.append('images', image);
+              }
+              formData.append('productId', response.data._id)
+              await Api.post('/api/store/products/images/upload', formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+                })
+                .then((response) => {
+                  if (response.status === 200){
+                    getProducts()
+                    togglePopUpForEditProduct()
+                    setNewImages([])
+                    setSelectedProduct([])
+                  }
+                })
+            }
+            getProducts()
+            togglePopUpForEditProduct()
+            setSelectedProduct('')
+          }
+        })
     } catch (error) {
       setError(error.message);
+      setNewImages('')
+      togglePopUpForEditProduct()
     }
   }
 
