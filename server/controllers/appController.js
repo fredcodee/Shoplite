@@ -160,7 +160,22 @@ const getAllReviews = async(req, res)=>{
     }
 }
 
+const deleteStore = async(req, res)=>{
+    try {
+        const{storeId} = req.body
+        const storeCheck = await userServices.checkUserHasOwnStore(req.user._id, storeId)
+        if (storeCheck) {
+            await userServices.deleteStore(storeId)
+            return res.json({message:"store deleted"})
+        }
+
+        
+    } catch (error) {
+        errorHandler.errorHandler(error, res)
+    }
+}
+
 
 
 module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage, uploadProductImages, getProduct,
-    editProduct, storeOrders, updateOrderStatus, getAllReviews }
+    editProduct, storeOrders, updateOrderStatus, getAllReviews, deleteStore }

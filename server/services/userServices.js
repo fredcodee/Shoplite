@@ -2,6 +2,10 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/UserModel')
 const Store =  require('../models/StoreModel')
 const Order =  require('../models/OrderModel')
+const Cart = require("../models/CartModel")
+const Review = require("../models/ReviewModel")
+const Product =requie('../models/ProductModel')
+const Image = require('../models/ImageModel')
 const bcrypt = require('bcrypt')
 
 
@@ -210,7 +214,40 @@ async function dashboardProps(storeId){
 }
 
 
+async function updateStoreProfile(storeId, name, bio, rating, image){
+    try {
+        const store = await Store.findById(storeId).populate('image')
+        store.name = name || store.name
+        store.bio = bio|| store.bio
+        store.rating = rating || store.rating
+        store.image = image || store.image
+
+        await store.save()
+        return store
+        
+    } catch (error) {
+        throw new Error(`Error updating store profile ${error.message}`)
+    }
+}
+
+
+async function deleteStore(storeId){
+    try {
+        await Cart.deleteMany({store_id:storeId})
+        await Image.deleteMany({store_id:storeId})
+        await Order.deleteMany({store_id:storeId})
+        await Product.deleteMany({store_id:storeId})
+        await Review.deleteMany({store_id:storeId})
+        await Store.deleteOne({store_id:storeId})
+        return true
+    } catch (error) {
+        throw new Error(`Error deleting store ${error.message}`)
+    }
+}
+
+
 
 
 module.exports={generateToken,getUserById, findAndVerifyUserCredentials , addUserToDb, checkIfUserIsRegistered,
-addUserToDb, googleAuth, getUserStore, addUpdateStoreImage, checkUserHasOwnStore, dashboardProps }
+addUserToDb, googleAuth, getUserStore, addUpdateStoreImage, checkUserHasOwnStore, dashboardProps, updateStoreProfile,
+deleteStore}

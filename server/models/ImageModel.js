@@ -7,6 +7,10 @@ const imageSchema = new mongoose.Schema({
     url: {
         type: String,
         default: null
+    },
+    store_id:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Store'
     }
 })
     
