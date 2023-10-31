@@ -150,7 +150,17 @@ const updateOrderStatus = async(req, res)=>{
     }
 }
 
+const getAllReviews = async(req, res)=>{
+    try{
+        const {storeId} = req.body
+        const reviews = await appServices.getAllReviews(storeId);
+        res.json(reviews);
+    }catch(error){
+        errorHandler.errorHandler(error, res)
+    }
+}
+
 
 
 module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage, uploadProductImages, getProduct,
-    editProduct, storeOrders, updateOrderStatus}
+    editProduct, storeOrders, updateOrderStatus, getAllReviews }

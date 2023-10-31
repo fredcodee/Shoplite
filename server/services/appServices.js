@@ -3,6 +3,7 @@ const Product = require('../models/ProductModel')
 const Image =  require('../models/ImageModel')
 const Cart =  require('../models/CartModel')
 const Order =  require('../models/OrderModel')
+const Review = require('../models/ReviewModel')
 const User = require('../models/UserModel')
 
 
@@ -185,11 +186,20 @@ async function updateOrderStatus(orderId, status){
             throw new Error(`status value not accepted`)
         }
     } catch (error) {
-        throw new Error(`Error updating order status`)
+        throw new Error(`Error updating order status ${error.message}`)
     }
 }
 
 
+async function getAllReviews(storeId){
+    try {
+        const reviews =  await Review.find({store_id:storeId}).populate('product_id user_id').sort({ date: -1 });
+        return reviews
+    } catch (error) {
+        throw new Error(`Error get reviews ${error.message}`)
+    }
+}
+
 module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails, 
-    cart, order, getStoreOrders, updateOrderStatus}
+    cart, order, getStoreOrders, updateOrderStatus, getAllReviews}
 

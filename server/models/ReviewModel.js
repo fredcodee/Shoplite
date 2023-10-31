@@ -15,7 +15,7 @@ const reviewSchema = new mongoose.Schema({
      store_id:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Store',
-        required
+        required:true
     },
     date:{
         type:Date
@@ -24,6 +24,10 @@ const reviewSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref:'User',
         default:null
+    },
+    rating:{
+        type:Number,
+        default: 5
     }
 })
 
