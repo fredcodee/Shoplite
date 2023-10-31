@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import DashboardNavBar from '../components/DashboardNavBar'
 import sample9 from '../assets/images/sample9.jpg'
@@ -10,9 +10,14 @@ import Api from '../Api'
 const MyStore = () => {
     const [showPopUpForEditProfile, setShowPopUpForEditProfile] =useState(false)
     const [showPopUpForDeleteStore, setShowPopUpForDeleteStore] = useState(false);
+    const [store, setStore] = useState([])
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
+    const [selectedImage, setSelectedImage] = useState(null);
     const storeId = `${localStorage.getItem('store')}`
     const token = localStorage.getItem('token').replace(/"/g, '');
     const [error, setError] = useState(null)
+    const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
     const history = useNavigate();
 
     const togglePopUpForEditProfile= () =>{
@@ -22,6 +27,24 @@ const MyStore = () => {
     const togglePopUpForDeleteStore = ()=>{
         setShowPopUpForDeleteStore(!showPopUpForDeleteStore)
     }
+    useEffect(()=>{
+        getUserStore()
+    },[])
+
+    const getUserStore = async () => {
+        await Api.get('/api/user/my-store', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+          .then((response) => {
+            if (response.status == 200) {
+                setStore(response.data)
+                setName(response.data.name)
+                setDescription(response.data.bio)
+            }
+          })
+      }
 
     const deleteStore = async()=>{
         try {
@@ -38,24 +61,80 @@ const MyStore = () => {
         }
     }
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+    
+        if (file) {
+          setSelectedImage(file);
+        }
+      };
+
+
+    const editStore = async()=>{
+        try {
+            const data = {
+                storeId:storeId,
+                name:name,
+                bio:description
+            }
+            await Api.post('/api/user/store/profile/edit', data,{
+                headers:{
+                    Authorization:token
+                }
+            })
+            .then(async(response)=>{
+                if(response.status ==200){
+                    if(selectedImage){
+                        const formData = new FormData();
+                        formData.append('image', selectedImage);
+                        formData.append('storeId', response.data._id)
+                        await Api.post('/api/user/store/profile/image/upload', formData, {
+                            headers: {
+                              'Content-Type': 'multipart/form-data'
+                            }
+                          })
+                            .then(() => {
+                                getUserStore()
+                                togglePopUpForEditProfile()
+                            })
+                    }
+                    getUserStore()
+                    togglePopUpForEditProfile()
+                }
+            })
+        } catch (error) {
+            setError(error.response.data.message);
+        }
+    }
+    
+
+    
+
     return (
         <div className='container mx-auto pt-3'>
             <DashboardNavBar />
             <div className=' text-xl'>
+            {error && <div className='text-red-500 p-2 text-center'><p>{error}</p></div>}
                 <h1 className='pt-4'>My Profile Details</h1>
                 <hr />
-                <p>Name: <span>Mika dean</span></p>
-                <p>Email: <span>mike@jjj.com</span></p>
+                {store.user_id ? (
+                    <>
+                        <p>Name: <span>{store.user_id.name}</span></p>
+                        <p>Email: <span>{store.user_id.email}</span></p>
+                    </>
+                ) : (
+                    <p>User data not available</p>
+                )}
             </div>
             <div className='p-3 rounded-md flex gap-5 justify-center items-center'>
-                <img src={sample9} alt="image" className='w-28' />
+                <img src={`${imageSrc}/images/${store.image?.name}`|| sample9 } alt="image" className='w-28' />
                 <div>
-                    <h1 className='font-bold text-xl'>Store Name</h1>
+                    <h1 className='font-bold text-xl'>{store.name}</h1>
                     <div className='w-72'>
-                        <p>temporibus aliquam animi facilis nam cumque, dolorem alias saepe eligendi minus incidunt inventore laboriosam. Ut.</p>
+                        <p>{store.bio}</p>
 
                     </div>
-                    <p><FontAwesomeIcon icon={faStar} style={{ color: "#ecc969", }} /><span>4.5/5</span></p>
+                    <p><FontAwesomeIcon icon={faStar} style={{ color: "#ecc969", }} /><span>{store.rating}</span>/5</p>
                 </div>
             </div>
             <div className='flex gap-4 justify-center items-cente'>
@@ -86,24 +165,35 @@ const MyStore = () => {
                                             <label htmlFor="storeName">
                                                 Store Name
                                             </label>
-                                            <input type="text"  id="storeName" className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"/>
+                                            <input type="text"  
+                                                value={name} onChange={(e) => setName(e.target.value)} 
+                                                id="storeName" 
+                                                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"/>
                                         </div>
                                         <div className='pb-3'> 
                                             <label htmlFor="StoreDescription">
                                             Store Description
                                             </label>
-                                            <textarea id="StoreDescription" rows="3" className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm" ></textarea>
+                                            <textarea 
+                                                id="StoreDescription" 
+                                                rows="3" 
+                                                value={description} onChange={(e) => setDescription(e.target.value)} 
+                                                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm" ></textarea>
                                             </div>
                                         <div className='pb-3'>
                                             <label htmlFor="Picture">
-                                                Profile Picture
+                                                Change Profile Picture
                                             </label>
-                                            <input type="file" id="Picture" className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"/>
+                                            <input 
+                                                type="file" 
+                                                id="Picture"
+                                                accept=".jpg, .jpeg, .png"
+                                                onChange={handleImageChange}
+                                                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"/>
                                         </div>
                                         <div className='text-center'>
-                                          <button type="button" className="text-white text-xl bg-green-500 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg  px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Save Changes</button>
+                                          <button type="button" onClick={editStore} className="text-white text-xl bg-green-500 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg  px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Save Changes</button>
                                         </div>
-                                        
 
                                     </div>
                                 </div>

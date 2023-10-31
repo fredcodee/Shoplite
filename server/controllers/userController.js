@@ -36,8 +36,6 @@ const storeDashBoard =async(req, res) =>{
     }
 }
 
-
-
 const addToCart = async(req, res)=>{
     try{
         const{ storeId, amount, productId, quantity, userId} = req.body
@@ -67,5 +65,19 @@ const order = async (req, res) => {
     }
 }
 
+const editStoreProfile = async(req,res)=>{
+    try {
+        const {name, bio, storeId} = req.body
+        const storeCheck = await userServices.checkUserHasOwnStore(req.user._id, storeId)
+        if(storeCheck){
+            const store = await userServices.updateStoreProfile(storeId,name, bio)
+            return res.json(store)
+        }
+    } catch (error) {
+        errorHandler.errorHandler(error, res) 
+    }
+}
 
-module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order}
+
+
+module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile}

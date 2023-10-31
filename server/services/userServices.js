@@ -92,7 +92,7 @@ async function googleAuth(name, email, sub){
 
 async function getUserStore(userId){
     try {
-        const store =  await Store.findOne({user_id:userId})
+        const store =  await Store.findOne({user_id:userId}).populate('user_id image')
         if(store){
             return store
         }
@@ -214,13 +214,12 @@ async function dashboardProps(storeId){
 }
 
 
-async function updateStoreProfile(storeId, name, bio, rating, image){
+async function updateStoreProfile(storeId, name, bio, rating){
     try {
-        const store = await Store.findById(storeId).populate('image')
+        const store = await Store.findById(storeId)
         store.name = name || store.name
         store.bio = bio|| store.bio
         store.rating = rating || store.rating
-        store.image = image || store.image
 
         await store.save()
         return store
