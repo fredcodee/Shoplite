@@ -4,7 +4,7 @@ const Store =  require('../models/StoreModel')
 const Order =  require('../models/OrderModel')
 const Cart = require("../models/CartModel")
 const Review = require("../models/ReviewModel")
-const Product =requie('../models/ProductModel')
+const Product =require('../models/ProductModel')
 const Image = require('../models/ImageModel')
 const bcrypt = require('bcrypt')
 
