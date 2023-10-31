@@ -140,7 +140,7 @@ async function dashboardProps(storeId){
     try {
         // total orders and total revenue
         const orders =  await Order.find({store_id: storeId, status:"completed"}).populate('cart_id')
-        const totalRevenue = 0
+        let totalRevenue = 0
         if(orders.length > 0 ){
             for(const order of orders){
                 totalRevenue += order.cart_id.amount

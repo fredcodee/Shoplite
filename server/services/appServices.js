@@ -171,7 +171,25 @@ async function getStoreOrders(storeId){
     }
 }
 
+async function updateOrderStatus(orderId, status){
+    try {
+        const order = await Order.findById(orderId)
+        const acceptedValues = [
+            "processing", "shipped", "completed", "cancelled"
+        ]
+        if (acceptedValues.includes(status)) {
+            order.status = status
+            await order.save()
+            return order
+        }else{
+            throw new Error(`status value not accepted`)
+        }
+    } catch (error) {
+        throw new Error(`Error updating order status`)
+    }
+}
+
 
 module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails, 
-    cart, order, getStoreOrders}
+    cart, order, getStoreOrders, updateOrderStatus}
 

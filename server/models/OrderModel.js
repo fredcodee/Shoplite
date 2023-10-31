@@ -9,7 +9,7 @@ const orderSchema = new mongoose.Schema({
         default:null
      },
      status:{
-        type:String, //processing, shiped, completed cancelled
+        type:String, //processing, shipped, completed, cancelled
         required: true
      },
      store_id:{

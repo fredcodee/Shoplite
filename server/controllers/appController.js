@@ -137,7 +137,20 @@ const storeOrders  = async(req, res)=>{
     }
 }
 
+const updateOrderStatus = async(req, res)=>{
+    try {
+        const {storeId, orderId, status} = req.body
+        const storeCheck = await userServices.checkUserHasOwnStore(req.user._id, storeId)
+        if (storeCheck) {
+            await appServices.updateOrderStatus(orderId, status)
+            return res.json("status updated")
+        }
+    } catch (error) {
+        errorHandler.errorHandler(error, res)
+    }
+}
+
 
 
 module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage, uploadProductImages, getProduct,
-    editProduct, storeOrders}
+    editProduct, storeOrders, updateOrderStatus}

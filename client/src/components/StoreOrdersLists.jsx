@@ -6,7 +6,6 @@ import Api from '../Api';
 const StoreOrdersLists = () => {
     const [orders,  setOrders] = useState([])
     const [error, setError] = useState(null)
-    const [status, setStatus] = useState('')
     const storeId = `${localStorage.getItem('store')}`
     const token = localStorage.getItem('token').replace(/"/g, '');
 
@@ -28,6 +27,30 @@ const StoreOrdersLists = () => {
                 }
             })
 
+        } catch (error) {
+            setError(error.response.data.message);
+        }
+    }
+
+    const updateStatus = async(orderId, status)=>{
+        try {
+            if(status != " "){
+                const data = {
+                    storeId:storeId,
+                    orderId:orderId,
+                    status: status
+                }
+                await Api.post('/api/store/order/status',data,{
+                    headers:{
+                        Authorization:token
+                    }
+                })
+                .then((response)=>{
+                    if (response.status == 200){
+                        getOrders()
+                    }
+                })
+            }
         } catch (error) {
             setError(error.response.data.message);
         }
@@ -54,10 +77,10 @@ const StoreOrdersLists = () => {
                           </div>
                           <div>
                               <span><FontAwesomeIcon icon={faTruckFast} style={{ color: "#31511f", }} /></span>
-                              <select name="" id="" value={order.status} onChange={(e) => setStatus(e.target.value)} >
-                                  <option value="">Update status</option>
+                              <select name="" id="" value={order.status} onChange={(e) => updateStatus(order._id, e.target.value) } >
+                                  <option value=" ">Update status</option>
                                   <option value= "processing" >Processing</option>
-                                  <option value="shiped"> Shipping</option>
+                                  <option value="shipped"> Shipping</option>
                                   <option value="completed"> Completed</option>
                                   <option value="cancelled"> Cancelled</option>
                               </select>

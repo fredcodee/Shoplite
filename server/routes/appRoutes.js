@@ -14,4 +14,5 @@ router.post('/store/products/images/upload',parser.array('images', 3), appcontro
 router.post('/store/product', appcontroller.getProduct)
 router.post('/store/product/edit', userAuth, appcontroller.editProduct)
 router.post('/store/all/orders', userAuth, appcontroller.storeOrders)
+router.post('/store/order/status',  userAuth, appcontroller.updateOrderStatus)
 module.exports= router
