@@ -31,7 +31,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/:storeName" element={<Store />} />
+            <Route path="/store/:storeName" element={<Store />} />
             <Route path="/my-products" element={<MyProducts />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/product/:id" element={<ProductPage />} />

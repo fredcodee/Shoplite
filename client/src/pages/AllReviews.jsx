@@ -43,7 +43,7 @@ const AllReviews = () => {
                 {reviews.length > 0 ? 
                 (reviews.map((review, index)=>(
                     <div className='p-3 hover:bg-slate-200'>
-                        <a href="#">
+                        <a href={`/product/${review.product_id}`}>
                             <p className='float-right'>20 Aug 2023- {review.date}</p>
                             <h1><FontAwesomeIcon icon={faStar} style={{ color: "#ecc969", }} /><span>{review.rating}</span>/5</h1>
                             <p className='text-green-600'>{review.user_id.email}</p>

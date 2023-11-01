@@ -196,10 +196,24 @@ async function getAllReviews(storeId){
         const reviews =  await Review.find({store_id:storeId}).populate('product_id user_id').sort({ date: -1 });
         return reviews
     } catch (error) {
-        throw new Error(`Error get reviews ${error.message}`)
+        throw new Error(`Error getting reviews ${error.message}`)
+    }
+}
+
+
+async function getStore(storeName){
+    try {
+        const store  = await Store.findOne({name: storeName})
+        if (store){
+            return store
+        }
+        return false
+        
+    } catch (error) {
+        throw new Error(`Error getting store ${error.message}`)
     }
 }
 
 module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails, 
-    cart, order, getStoreOrders, updateOrderStatus, getAllReviews}
+    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore}
 

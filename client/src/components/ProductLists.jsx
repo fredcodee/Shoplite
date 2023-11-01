@@ -18,11 +18,13 @@ const ProductLists = () => {
   const [price, setPrice] = useState('')
   const [selectedImages, setSelectedImages] = useState([]);
   const [newImages, setNewImages] = useState([])
+  const [owner, setOwner] = useState(false)
   const [error, setError] = useState(null)
   const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
 
   useEffect(() => {
-    getProducts()
+    getProducts(),
+      getUserStore()
   }, [])
 
 
@@ -33,6 +35,19 @@ const ProductLists = () => {
 
   const togglePopUpForDeleteProduct = () => {
     setShowPopUpForDeleteProduct(!showPopUpForDeleteProduct);
+  }
+
+  const getUserStore = async () => {
+    await Api.get('/api/user/my-store', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((response) => {
+        if (response.status == 200) {
+          if (response.data._id == storeId) setOwner(true)
+        }
+      })
   }
 
   const getProducts = async () => {
@@ -91,7 +106,7 @@ const ProductLists = () => {
   const editProduct = async () => {
     try {
       const data = {
-        storeId:storeId,
+        storeId: storeId,
         productId: selectedProduct._id,
         name: name || selectedProduct.name,
         description: description || selectedProduct.description,
@@ -120,7 +135,7 @@ const ProductLists = () => {
                   }
                 })
                 .then((response) => {
-                  if (response.status === 200){
+                  if (response.status === 200) {
                     getProducts()
                     togglePopUpForEditProduct()
                     setNewImages([])
@@ -146,23 +161,23 @@ const ProductLists = () => {
 
     // Update the state with the removed image
     setSelectedImages(updatedImages);
-}
+  }
 
-const handleImageChange = (e) => {
-  const files = e.target.files;
-  const imageArray = Array.from(files);
+  const handleImageChange = (e) => {
+    const files = e.target.files;
+    const imageArray = Array.from(files);
 
-  // Update the state with the selected images
-  setNewImages([...newImages, ...imageArray]);
-}
+    // Update the state with the selected images
+    setNewImages([...newImages, ...imageArray]);
+  }
 
-const handleImageRemoveFromNew = (index) => {
-  const updatedImages = [...newImages];
-  updatedImages.splice(index, 1);
+  const handleImageRemoveFromNew = (index) => {
+    const updatedImages = [...newImages];
+    updatedImages.splice(index, 1);
 
-  // Update the state with the removed image
-  setNewImages(updatedImages);
-}
+    // Update the state with the removed image
+    setNewImages(updatedImages);
+  }
 
 
 
@@ -180,8 +195,7 @@ const handleImageRemoveFromNew = (index) => {
                   <p>$ <span>{product.price}</span></p>
                 </div>
               </a>
-              {/* if user == store owner show this */}
-              <div className='flex gap-4'>
+              {owner ? (<div className='flex gap-4'>
                 <p className='hover:cursor-pointer hover:text-xl'
                   onClick={() => {
                     togglePopUpForEditProduct();
@@ -194,7 +208,9 @@ const handleImageRemoveFromNew = (index) => {
                     getProductDetails(product._id)
                   }}>
                   <FontAwesomeIcon icon={faTrash} style={{ color: "#cb2a2a", }} /></p>
-              </div>
+              </div>) :
+                (<div></div>)}
+
             </div>
           )))
         ) : (<div> <h1 className='text-center pt-6 text-cyan-800 text-lg'>No Products yet ...</h1></div>)}
@@ -254,18 +270,18 @@ const handleImageRemoveFromNew = (index) => {
                       <label htmlFor="Picture">
                         Picture
                       </label>
-                      <input 
+                      <input
                         type="file"
                         accept=".jpg, .jpeg, .png"
                         multiple
-                        id="Picture" 
+                        id="Picture"
                         onChange={handleImageChange}
                         className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm" />
                     </div>
                     <div className="container mx-auto flex justify-center">
                       {selectedImages.map((image, index) => (
                         <div key={index} className="d-inline-block m-2 pb-3">
-                          <img src={`${imageSrc}/images/${image.name}`|| URL.createObjectURL(image)} alt={`Image ${index}`} className="h-40 w-52" />
+                          <img src={`${imageSrc}/images/${image.name}` || URL.createObjectURL(image)} alt={`Image ${index}`} className="h-40 w-52" />
                           <button onClick={() => handleImageRemove(index)} className='text-red-900 hover:text-red-600'>Remove</button>
                         </div>
                       ))}

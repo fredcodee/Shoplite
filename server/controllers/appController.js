@@ -176,6 +176,21 @@ const deleteStore = async(req, res)=>{
 }
 
 
+const getStore =async(req, res)=>{
+    try{
+        const {name} =  req.body
+        const store = await appServices.getStore(name)
+        if(store){
+            return res.json(store)
+        }
+
+        return res.status(401).json({message:"no store found"})
+
+    }catch(error){
+        errorHandler.errorHandler(error, res)
+    }
+}
+
 
 module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage, uploadProductImages, getProduct,
-    editProduct, storeOrders, updateOrderStatus, getAllReviews, deleteStore }
+    editProduct, storeOrders, updateOrderStatus, getAllReviews, deleteStore, getStore }
