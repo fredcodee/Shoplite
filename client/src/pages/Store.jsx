@@ -11,9 +11,11 @@ const Store = () => {
     const { storeName } = useParams();
     const [store, setStore] = useState([])
     const [products, setProducts] = useState([])
+    const [productsCopy, setProductsCopy] = useState([])
     const history = useNavigate();
     const token = localStorage.getItem('token').replace(/"/g, '');
     const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
+    const [searchInput , setSearchInput] = useState('')
 
 
     useEffect(() => {
@@ -40,9 +42,22 @@ const Store = () => {
             }
         })
             .then((response) => {
-                if (response.status == 200) setProducts(response.data)
+                if (response.status == 200){
+                    setProductsCopy(response.data)
+                    setProducts(response.data)
+                } 
             })
     }
+
+    const handlesearch = async(e)=>{
+            e.preventDefault();
+            const filteredProducts = productsCopy.filter(title => title.name.includes(searchInput))
+            if (filteredProducts.length === 0){
+                setProducts([])
+            }
+            setProducts(filteredProducts)
+    }
+
 
     return (
         <div>
@@ -70,15 +85,15 @@ const Store = () => {
                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                 </svg>
                             </div>
-                            <input type="search" id="default-search" className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-500 focus:border-green-500 dark:bg-green-700 dark:border-green-600 dark:placeholder-green-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="Search in store" required />
-                            <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-green-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+                            <input type="search" onChange={(e)=> setSearchInput(e.target.value)} id="default-search" className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-green-500 focus:border-green-500 dark:bg-green-700 dark:border-green-600 dark:placeholder-green-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="Search in store" required />
+                            <button type="submit" onClick={handlesearch} className="text-white absolute right-2.5 bottom-2.5 bg-green-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
                         </div>
                     </form>
                 </div>
 
                 <div>
                     <div className='grid grid-cols-6 gap-4 pt-5'>
-                        {products.length > 1 ? (
+                        {products.length > 0 ? (
                             (products.map((product, index) => (
                                 <div key={index} className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
                                     <a href={`/product/${product._id}`}>
