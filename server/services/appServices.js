@@ -95,12 +95,20 @@ async function addImagesToProducts(productId, imageId) {
 
 async function getProductDetails(productId){
     try {
-        const product = await Product.findById(productId).populate('images')
+        const product = await Product.findById(productId).populate('images store_id')
+        //get reviews
+        const reviews =  await Review.find({product_id:product._id})
+        //get total reviews
+        const data = {
+            product: product,
+            reviews: reviews,
+            totat_reviews:reviews.length
+        }
         if (!product) {
             throw new Error('Product not found');
         }
 
-        return product
+        return data
 
     } catch (error) {
         throw new Error(`Error getting product details ${error.message}`)

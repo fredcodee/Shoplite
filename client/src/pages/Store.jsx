@@ -13,7 +13,6 @@ const Store = () => {
     const [products, setProducts] = useState([])
     const [productsCopy, setProductsCopy] = useState([])
     const history = useNavigate();
-    const token = localStorage.getItem('token').replace(/"/g, '');
     const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
     const [searchInput , setSearchInput] = useState('')
 
@@ -36,11 +35,7 @@ const Store = () => {
     }
 
     const getProducts = async (storeId) => {
-        await Api.post('/api/store/all-products', { storeId: storeId }, {
-            headers: {
-                Authorization: token
-            }
-        })
+        await Api.post('/api/store/all-products', { storeId: storeId })
             .then((response) => {
                 if (response.status == 200){
                     setProductsCopy(response.data)
