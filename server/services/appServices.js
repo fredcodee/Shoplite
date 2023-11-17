@@ -134,7 +134,7 @@ async function updateProductDetails(productId, name, description, stock, price, 
 async function cart(storeId, amount, productId, quantity, userId) {
     try {
         //check if product already in user cart
-        const checkCart = await Cart.findOne({ user_id: userId, product_id: productId })
+        const checkCart = await Cart.findOne({ user_id: userId, product_id: productId , order_placed:false})
         if (checkCart) {
             checkCart.amount = amount
             checkCart.quantity = quantity
@@ -156,18 +156,43 @@ async function cart(storeId, amount, productId, quantity, userId) {
         throw new Error(`Error add items to cart ${error.message}`)
     }
 }
-async function order(email, address, status, storeId, userId, cartId){
+
+async function getCart(userId){
+    try {
+        const cart = await Cart.find({user_id:userId, order_placed:false}).populate({
+            path: 'product_id',
+            populate: [
+                {
+                  path: 'images', 
+                },
+                {
+                  path: 'store_id',
+                },
+              ],})
+        return cart
+    } catch (error) {
+       throw new Error(`Error add items to cart ${error.message}`) 
+    }
+}
+async function order(email, address, status, storeId, userId, cartId, amount){
     try{
+        const cart = await Cart.findById(cartId)
+        if(cart.order_placed){
+            throw new Error('this order has being placed already')
+        }
+
         const newOrder = new Order({
             email:email,
             address:address,
             status:status,
             store_id:storeId,
             user_id:userId,
-            cart_id:cartId
+            cart_id:cartId,
+            total_amount:amount
         })
-
         await newOrder.save()
+        cart.order_placed = true
+        await cart.save()
         return newOrder
 
     }catch (error) {
@@ -232,5 +257,5 @@ async function getStore(storeName){
 }
 
 module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails, 
-    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore}
+    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore, getCart}
 

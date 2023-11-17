@@ -1,10 +1,38 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Navbar from '../components/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import sample1 from '../assets/images/sample1.png';
+import Api from '../Api';
 
 const CartPage = () => {
+  const [cart, setCart] = useState([])
+  const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(null)
+  const token = localStorage.getItem('token').replace(/"/g, '')
+  const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
+
+
+  useEffect(()=>{
+    getCart()
+  }, [])
+
+  const getCart= async()=>{
+    try {
+      await Api.get('/api/user/all/carts',{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then((response)=>{
+        if(response.status == 200) setCart(response.data)
+      })
+      
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+
   return (
     <div className='container mx-auto pt-3'>
       <Navbar />
@@ -19,78 +47,36 @@ const CartPage = () => {
                         <span className='pl-2'>SELECT ALL (16 ITEM(S))</span>
                         
                     </label><br />
-
-                    <div className='border-solid border-2 border-gray-100 rounded-md mb-4 '>
+                    {cart.length > 0 ? (
+                      (cart.map((cart, index)=>(
+                        <div className='border-solid border-2 border-gray-100 rounded-md mb-4 '>
                         <label htmlFor="option1">
                             <input type="checkbox" id="option1" name="options[]" value="Option 1" />
-                             <span className='text-green-600 pl-2'><a href="#">Store Name</a></span>
+                             <span className='text-green-600 pl-2'><a href="#">{cart?.product_id?.store_id?.name}</a></span>
+                             <div className='... text-sm'>
+                                    <p className=' text-red-600'><span><FontAwesomeIcon icon={faTrashCan} style={{color: "#bf3d1d",}}  className='pr-2'/>Remove</span></p> 
+                                </div>
 
                             <div className="grid grid-cols-4 gap-5">
                                 <div className='... p-3'>
-                                <img src={sample1} alt="" className='w-24' />
+                                <img src={`${imageSrc}/images/${cart?.product_id?.images[0]?.name}`} alt="" className='w-24' />
                                 </div>
                                 <div className='... text-xl'>
-                                    <p>product name</p>
+                                    <p>{cart?.product_id?.name}</p>
                                 </div>
                                 <div className='... text-xl text-green-600'>
-                                    <p>$ <span>800.00</span></p>
+                                    <p>$ <span>{cart?.amount}</span></p>
                                 </div>
                                 <div className='... text-xl'>
-                                    <p>Quantity <span><input type="number" id="numberRange" name="numberRange" min="1" max="10" className='bg-gray-50 border border-gray-300' /></span></p>
+                                    <p>Quantity <span><input type="number" id="numberRange" name="numberRange" min="1" max="10" className='bg-gray-50 border border-gray-300' value={cart?.quantity} /></span></p>
                                 </div>
+                                
                                 
                             </div>
                         </label><br />
-
                     </div>
-
-                    <div className='border-solid border-2 border-gray-100 rounded-md mb-4'>
-                        <label htmlFor="option1">
-                            <input type="checkbox" id="option1" name="options[]" value="Option 1" />
-                             <span className='text-green-600 pl-2'><a href="#">Store Name</a></span>
-
-                            <div className="grid grid-cols-4 gap-5">
-                                <div className='... p-3'>
-                                <img src={sample1} alt="" className='w-24' />
-                                </div>
-                                <div className='... text-xl'>
-                                    <p>product name</p>
-                                </div>
-                                <div className='... text-xl text-green-600'>
-                                    <p>$ <span>800.00</span></p>
-                                </div>
-                                <div className='... text-xl'>
-                                    <p>Quantity <span><input type="number" id="numberRange" name="numberRange" min="1" max="10" className='bg-gray-50 border border-gray-300' /></span></p>
-                                </div>
-                                
-                            </div>
-                        </label><br />
-
-                    </div>
-
-                    <div className='border-solid border-2 border-gray-100 rounded-md mb-4'>
-                        <label htmlFor="option1">
-                            <input type="checkbox" id="option1" name="options[]" value="Option 1" />
-                             <span className='text-green-600 pl-2'><a href="#">Store Name</a></span>
-
-                            <div className="grid grid-cols-4 gap-5">
-                                <div className='... p-3'>
-                                <img src={sample1} alt="" className='w-24' />
-                                </div>
-                                <div className='... text-xl'>
-                                    <p>product name</p>
-                                </div>
-                                <div className='... text-xl text-green-600'>
-                                    <p>$ <span>800.00</span></p>
-                                </div>
-                                <div className='... text-xl'>
-                                    <p>Quantity <span><input type="number" id="numberRange" name="numberRange" min="1" max="10" className='bg-gray-50 border border-gray-300' /></span></p>
-                                </div>
-                                
-                            </div>
-                        </label><br />
-
-                    </div>
+                      )))
+                    ):(<div> Nothing in your cart yet </div>)}
 
                     {/* <input type="submit" value="Submit" /> */}
               </form>
@@ -102,6 +88,7 @@ const CartPage = () => {
               <div className='text-xl'>
                 <p>Total Items: 18</p>
                 <p>Shipping Fee: $<span>199.00</span></p>
+                <p>Service payment: $2</p>
                 <hr />
               </div>
               <p className='text-2xl font-bold'>Subtotal: $<span>2,009.00</span></p>

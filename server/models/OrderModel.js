@@ -29,6 +29,10 @@ const orderSchema = new mongoose.Schema({
     cart_id:{
       type: mongoose.Schema.Types.ObjectId,
       ref:'Cart',
+    },
+    total_amount:{
+        type:Number,
+        required:true
     }
 })
 

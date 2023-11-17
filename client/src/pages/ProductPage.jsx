@@ -24,11 +24,7 @@ const ProductPage = () => {
 
     const getProduct = async () => {
         try {
-            await Api.post('/api/store/product', { productId: id }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
+            await Api.post('/api/store/product', { productId: id })
                 .then((response) => {
                     if (response.status == 200) {
                         setProduct(response.data)
@@ -55,6 +51,10 @@ const ProductPage = () => {
     const addToCart = async()=>{
         try{
             if(!token) history('/login')
+            if(quantity > product.product.stock){
+                setSuccess(null)
+                setError(`only ${product.product.stock} are available in stocks right now`)
+            }else{
             const data = {
                 productId: product.product._id,
                 storeId:product.product.store_id._id,
@@ -72,6 +72,7 @@ const ProductPage = () => {
                     setSuccess("Added to you cart")
                 }
             })
+        }
         }catch(error){
             setSuccess(null)
             setError("error.message")

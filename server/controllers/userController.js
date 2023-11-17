@@ -46,6 +46,15 @@ const addToCart = async(req, res)=>{
     }
 }
 
+const getCart = async(req, res) =>{
+    try {
+        const cart  =  await appServices.getCart(req.user)
+        res.json(cart)
+    } catch (error) {
+        errorHandler.errorHandler(error, res)
+    }
+}
+
 const order = async (req, res) => {
     try {
         const data = req.body.data;
@@ -80,4 +89,4 @@ const editStoreProfile = async(req,res)=>{
 
 
 
-module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile}
+module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile, getCart}

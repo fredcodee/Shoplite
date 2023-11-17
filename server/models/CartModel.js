@@ -23,7 +23,7 @@ const cartSchema = new mongoose.Schema({
         ref:'User',
         default:null
     },
-    Order_placed:{
+    order_placed:{
       type:Boolean,
       default:false
     }
