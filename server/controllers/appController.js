@@ -193,4 +193,4 @@ const getStore =async(req, res)=>{
 
 
 module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage, uploadProductImages, getProduct,
-    editProduct, storeOrders, updateOrderStatus, getAllReviews, deleteStore, getStore }
+    editProduct, storeOrders, updateOrderStatus, getAllReviews, deleteStore, getStore}

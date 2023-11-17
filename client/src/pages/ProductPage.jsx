@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate} from 'react-router-dom'
 import sample1 from '../assets/images/sample1.png'
 import Api from '../Api'
 
@@ -11,9 +11,12 @@ const ProductPage = () => {
     const { id } = useParams();
     const [product, setProduct] = useState([])
     const [error, setError] = useState(null)
-    const token = localStorage.getItem('token').replace(/"/g, '');
+    const [success, setSuccess] = useState(null)
+    const token = localStorage.getItem('token') || false
     const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
     const [imageSlides, setImageSlide] = useState([])
+    const history = useNavigate();
+    const [quantity, setQuantity] =  useState('')
 
     useEffect(() => {
         getProduct()
@@ -48,10 +51,37 @@ const ProductPage = () => {
         const newIndex = isLastSlide ? 0 : currentIndex + 1;
         setCurrentIndex(newIndex)
     }
+
+    const addToCart = async()=>{
+        try{
+            if(!token) history('/login')
+            const data = {
+                productId: product.product._id,
+                storeId:product.product.store_id._id,
+                amount:  product.product.price * parseInt(quantity == "" ? 1: quantity ),
+                quantity: quantity == "" ? 1 : parseInt(quantity)
+            }
+            await Api.post('/api/user/add/cart',data,{
+                headers:{
+                    Authorization: `Bearer ${token.replace(/"/g, '')}`
+                }
+            })
+            .then((response)=>{
+                if (response.status === 200) {
+                    setError(null)
+                    setSuccess("Added to you cart")
+                }
+            })
+        }catch(error){
+            setSuccess(null)
+            setError("error.message")
+        }
+    }
     return (
         <div className='container mx-auto pt-3'>
             <Navbar />
-            {error && <div className='text-red-500 pb-2'><p>{error}</p></div>}
+            {error && <div className='text-red-500 pb-2 text-center font-bold'><p>{error}</p></div>}
+            {success && <div className='text-green-500 pb-2 text-center font-bold text-lg'>{success}</div>}
             <div>
                 <p> <span> <a href={`/store/${product?.product?.store_id?.name || "unknown"}`} className='text-green-600'>{product?.product?.store_id?.name || "Unknown Store"}</a></span> - {product?.product?.name}</p>
             </div>
@@ -92,12 +122,16 @@ const ProductPage = () => {
                     <h1 className='text-green-600 text-2xl pt-5 pb-4'>$ <span>{product?.product?.price}</span></h1>
                     <hr />
                     <div className='pt-4'>
-                        <label htmlFor="numberRange" className='text-xl'>Quantity </label>
-                        <input type="number" id="numberRange" name="numberRange" min="1" max={product?.product?.stock} className='bg-gray-50 border border-gray-300' />
-                        <div className='pt-4'>
-                            <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Order Now</button>
-                            <button type="button" className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:focus:ring-yellow-900">Add to Cart</button>
-                        </div>
+                            <label htmlFor="numberRange" className='text-xl'>Quantity </label>
+                            <input type="number" id="numberRange" name="numberRange" min="1" max={product?.product?.stock}
+                                className='bg-gray-50 border border-gray-300'  
+                                required
+                                onChange={e => setQuantity(e.target.value)}
+                            />
+                            <div className='pt-4'>
+                                <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Order Now</button>
+                                <button type="button" onClick={addToCart} className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:focus:ring-yellow-900">Add to Cart</button>
+                            </div>
                     </div>
 
                     <div>

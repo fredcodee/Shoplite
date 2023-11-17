@@ -38,8 +38,8 @@ const storeDashBoard =async(req, res) =>{
 
 const addToCart = async(req, res)=>{
     try{
-        const{ storeId, amount, productId, quantity, userId} = req.body
-        const addToCart = await appServices.cart(storeId, amount, productId, quantity,userId)
+        const{ storeId, amount, productId, quantity} = req.body
+        const addToCart = await appServices.cart(storeId, amount, productId, quantity,  req.user)
         return res.json(addToCart)
     } catch(error){
         errorHandler.errorHandler(error, res)

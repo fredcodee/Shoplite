@@ -96,9 +96,9 @@ async function addImagesToProducts(productId, imageId) {
 async function getProductDetails(productId){
     try {
         const product = await Product.findById(productId).populate('images store_id')
-        //get reviews
+        //get reviews --------------
         const reviews =  await Review.find({product_id:product._id})
-        //get total reviews
+        //get total reviews  ------------------
         const data = {
             product: product,
             reviews: reviews,
@@ -131,17 +131,26 @@ async function updateProductDetails(productId, name, description, stock, price, 
     }
 }
 
-async function cart(storeId, amount, productId,quantity, userId){
-    try{
-        const newCart = new Cart({
-            quantity:quantity,
-            amount: amount,
-            product_id:productId,
-            store_id:storeId,
-            user_id:userId
-        })
-        await newCart.save()
-        return newCart
+async function cart(storeId, amount, productId, quantity, userId) {
+    try {
+        //check if product already in user cart
+        const checkCart = await Cart.findOne({ user_id: userId, product_id: productId })
+        if (checkCart) {
+            checkCart.amount = amount
+            checkCart.quantity = quantity
+            await checkCart.save()
+            return checkCart
+        } else {
+            const newCart = new Cart({
+                quantity: quantity,
+                amount: amount,
+                product_id: productId,
+                store_id: storeId,
+                user_id: userId
+            })
+            await newCart.save()
+            return newCart
+        }
 
     } catch (error) {
         throw new Error(`Error add items to cart ${error.message}`)
