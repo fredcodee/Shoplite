@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
@@ -13,22 +13,66 @@ const CartPage = () => {
   const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
 
 
-  useEffect(()=>{
+  useEffect(() => {
     getCart()
   }, [])
 
-  const getCart= async()=>{
+  const getCart = async () => {
     try {
-      await Api.get('/api/user/all/carts',{
-        headers:{
+      await Api.get('/api/user/all/carts', {
+        headers: {
           Authorization: `Bearer ${token}`
         }
       })
-      .then((response)=>{
-        if(response.status == 200) setCart(response.data)
-      })
-      
+        .then((response) => {
+          if (response.status == 200) setCart(response.data)
+        })
+
     } catch (error) {
+      setError(error.message)
+    }
+  }
+
+  //delete single
+  const deleteCart = async (cartId) => {
+    try {
+      await Api.delete('/api/user/cart/delete', {
+        data: { cartIds: [cartId] },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            setSuccess("Cart removed")
+            setError(null);
+            getCart()
+          }
+        })
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+  //delete all
+  const deleteAllCart = async () => {
+    try {
+      if (cart.length === 0) {
+        setSuccess(null)
+        setError("you have no cart to delete")
+      } else {
+        const allCartIds = cart.map((cartItem) => cartItem._id);
+        await Api.delete('/api/user/cart/delete', {
+          data: { cartIds: allCartIds },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        })
+        setSuccess("Carts deleted successfully");
+        setError(null);
+        getCart();
+      }
+    } catch (error) {
+      setSuccess(null)
       setError(error.message)
     }
   }
@@ -41,44 +85,44 @@ const CartPage = () => {
           <div className="col-span-2">
             <div className='pt-3'>
               <form>
-                    <a  href="#" className='float-right'> <span><FontAwesomeIcon icon={faTrashCan} style={{color: "#bf3d1d",}}  className='pr-2'/></span>DELETE ALL</a>
-                    <label htmlFor="all">
-                        <input type="checkbox" id="all" name="options[]" value="all"/>
-                        <span className='pl-2'>SELECT ALL (16 ITEM(S))</span>
-                        
-                    </label><br />
-                    {cart.length > 0 ? (
-                      (cart.map((cart, index)=>(
-                        <div className='border-solid border-2 border-gray-100 rounded-md mb-4 '>
-                        <label htmlFor="option1">
-                            <input type="checkbox" id="option1" name="options[]" value="Option 1" />
-                             <span className='text-green-600 pl-2'><a href="#">{cart?.product_id?.store_id?.name}</a></span>
-                             <div className='... text-sm'>
-                                    <p className=' text-red-600'><span><FontAwesomeIcon icon={faTrashCan} style={{color: "#bf3d1d",}}  className='pr-2'/>Remove</span></p> 
-                                </div>
+                <a onClick={deleteAllCart} className='float-right hover: cursor-pointer'> <span><FontAwesomeIcon icon={faTrashCan} style={{ color: "#bf3d1d", }} className='pr-2' /></span>DELETE ALL</a>
+                <label htmlFor="all">
+                  <input type="checkbox" id="all" name="options[]" value="all" />
+                  <span className='pl-2'>SELECT ALL (16 ITEM(S))</span>
 
-                            <div className="grid grid-cols-4 gap-5">
-                                <div className='... p-3'>
-                                <img src={`${imageSrc}/images/${cart?.product_id?.images[0]?.name}`} alt="" className='w-24' />
-                                </div>
-                                <div className='... text-xl'>
-                                    <p>{cart?.product_id?.name}</p>
-                                </div>
-                                <div className='... text-xl text-green-600'>
-                                    <p>$ <span>{cart?.amount}</span></p>
-                                </div>
-                                <div className='... text-xl'>
-                                    <p>Quantity <span><input type="number" id="numberRange" name="numberRange" min="1" max="10" className='bg-gray-50 border border-gray-300' value={cart?.quantity} /></span></p>
-                                </div>
-                                
-                                
-                            </div>
-                        </label><br />
+                </label><br />
+                {cart.length > 0 ? (
+                  (cart.map((cart, index) => (
+                    <div className='border-solid border-2 border-gray-100 rounded-md mb-4 ' key={index}>
+                      <label htmlFor="option1">
+                        <input type="checkbox" id="option1" name="options[]" value="Option 1" />
+                        <span className='text-green-600 pl-2'><a href={`/store/${cart?.product_id?.store_id?.name}`}>{cart?.product_id?.store_id?.name}</a></span>
+                        <div className='... text-sm'>
+                          <p onClick={() => deleteCart(cart._id)} className=' text-red-600 hover:cursor-pointer'><span><FontAwesomeIcon icon={faTrashCan} style={{ color: "#bf3d1d", }} className='pr-2' />Remove</span></p>
+                        </div>
+
+                        <div className="grid grid-cols-4 gap-5">
+                          <div className='... p-3'>
+                            <img src={`${imageSrc}/images/${cart?.product_id?.images[0]?.name}`} alt="" className='w-24' />
+                          </div>
+                          <div className='... text-xl'>
+                            <p>{cart?.product_id?.name}</p>
+                          </div>
+                          <div className='... text-xl text-green-600'>
+                            <p>$ <span>{cart?.amount}</span></p>
+                          </div>
+                          <div className='... text-xl'>
+                            <p>Quantity <span><input type="number" id="numberRange" name="numberRange" min="1" max="10" className='bg-gray-50 border border-gray-300' value={cart?.quantity} /></span></p>
+                          </div>
+
+
+                        </div>
+                      </label><br />
                     </div>
-                      )))
-                    ):(<div> Nothing in your cart yet </div>)}
+                  )))
+                ) : (<div> Nothing in your cart yet </div>)}
 
-                    {/* <input type="submit" value="Submit" /> */}
+                {/* <input type="submit" value="Submit" /> */}
               </form>
             </div>
           </div>

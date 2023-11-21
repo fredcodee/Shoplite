@@ -55,6 +55,20 @@ const getCart = async(req, res) =>{
     }
 }
 
+const deleteCart  = async(req, res)=>{
+    try{
+        const {cartIds} = req.body
+        for (const cartId of cartIds){
+            await appServices.deleteCart(cartId, req.user)
+        }
+        res.json({ message: "Cart(s) removed" });
+
+    }
+    catch(error){
+        errorHandler.errorHandler(error, res)
+    }
+}
+
 const order = async (req, res) => {
     try {
         const data = req.body.data;
@@ -74,6 +88,8 @@ const order = async (req, res) => {
     }
 }
 
+
+
 const editStoreProfile = async(req,res)=>{
     try {
         const {name, bio, storeId} = req.body
@@ -89,4 +105,4 @@ const editStoreProfile = async(req,res)=>{
 
 
 
-module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile, getCart}
+module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile, getCart, deleteCart}

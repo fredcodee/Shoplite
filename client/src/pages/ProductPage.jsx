@@ -69,7 +69,7 @@ const ProductPage = () => {
             .then((response)=>{
                 if (response.status === 200) {
                     setError(null)
-                    setSuccess("Added to you cart")
+                    setSuccess("Added to your cart")
                 }
             })
         }

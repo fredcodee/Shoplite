@@ -15,6 +15,7 @@ router.post('/add/cart', userAuth, userController.addToCart)
 router.post('/order', userAuth, userController.order)
 router.post('/store/profile/edit', userAuth, userController.editStoreProfile)
 router.get('/all/carts', userAuth, userController.getCart)
+router.delete('/cart/delete', userAuth, userController.deleteCart)
 
 
 module.exports= router

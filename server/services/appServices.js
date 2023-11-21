@@ -174,6 +174,8 @@ async function getCart(userId){
        throw new Error(`Error add items to cart ${error.message}`) 
     }
 }
+
+
 async function order(email, address, status, storeId, userId, cartId, amount){
     try{
         const cart = await Cart.findById(cartId)
@@ -256,6 +258,20 @@ async function getStore(storeName){
     }
 }
 
+async function deleteCart(cartId, userId){
+    try{
+        const cart =  await Cart.findOne({user_id:userId, _id:cartId})
+        if(cart){
+            cart.deleteOne()
+            return true
+        }
+        throw new Error(`Cart doesnt exists`)
+
+    } catch(error){
+        throw new Error(`Error delete cart${error.message}`)
+    }
+}
+
 module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails, 
-    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore, getCart}
+    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore, getCart, deleteCart}
 
