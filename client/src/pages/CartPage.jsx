@@ -84,22 +84,25 @@ const CartPage = () => {
   }
 
   const handleCheckboxChange = (cart) => {
-    if (selectedCarts.includes(cart)) {
-      setSelectedCarts(selectedCarts.filter(cart=> cart !== cart));
+    const cartExists = selectedCarts.some(selectedCart => selectedCart._id === cart._id);
+    if (cartExists) {
+      setSelectedCarts(selectedCarts.filter(selectedCart => selectedCart._id !== cart._id));
     } else {
       setSelectedCarts([...selectedCarts, cart]);
     }
   };
 
   const calculateTotalExpensices = ()=>{
-    if(selectedCarts.length > 0){
+    if(selectedCarts.length !== 0){
       let total = 29 + 2
       for(const product of selectedCarts){
         total += product.amount
       }
+      console.log(selectedCarts.length)
       setTotal(total)
     }
     else{
+      console.log(selectedCarts.length)
       setTotal(0)
     }
   }
