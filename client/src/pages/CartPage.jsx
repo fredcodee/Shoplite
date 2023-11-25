@@ -11,11 +11,17 @@ const CartPage = () => {
   const [success, setSuccess] = useState(null)
   const token = localStorage.getItem('token').replace(/"/g, '')
   const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
+  const [selectedCarts, setSelectedCarts] = useState([]);
+  const [total, setTotal] = useState([])
 
 
   useEffect(() => {
     getCart()
   }, [])
+
+  useEffect(()=>{
+    calculateTotalExpensices()
+  }, [selectedCarts])
 
   const getCart = async () => {
     try {
@@ -77,6 +83,27 @@ const CartPage = () => {
     }
   }
 
+  const handleCheckboxChange = (cart) => {
+    if (selectedCarts.includes(cart)) {
+      setSelectedCarts(selectedCarts.filter(cart=> cart !== cart));
+    } else {
+      setSelectedCarts([...selectedCarts, cart]);
+    }
+  };
+
+  const calculateTotalExpensices = ()=>{
+    if(selectedCarts.length > 0){
+      let total = 29 + 2
+      for(const product of selectedCarts){
+        total += product.amount
+      }
+      setTotal(total)
+    }
+    else{
+      setTotal(0)
+    }
+  }
+
   return (
     <div className='container mx-auto pt-3'>
       <Navbar />
@@ -84,18 +111,13 @@ const CartPage = () => {
         <div className="grid grid-cols-3 gap-5">
           <div className="col-span-2">
             <div className='pt-3'>
-              <form>
                 <a onClick={deleteAllCart} className='float-right hover: cursor-pointer'> <span><FontAwesomeIcon icon={faTrashCan} style={{ color: "#bf3d1d", }} className='pr-2' /></span>DELETE ALL</a>
-                <label htmlFor="all">
-                  <input type="checkbox" id="all" name="options[]" value="all" />
-                  <span className='pl-2'>SELECT ALL (16 ITEM(S))</span>
-
-                </label><br />
+                <span className='pl-2'>{cart.length} ITEM(S)</span><br />
                 {cart.length > 0 ? (
                   (cart.map((cart, index) => (
                     <div className='border-solid border-2 border-gray-100 rounded-md mb-4 ' key={index}>
-                      <label htmlFor="option1">
-                        <input type="checkbox" id="option1" name="options[]" value="Option 1" />
+                      <label htmlFor={`option${index}`}>
+                        <input type="checkbox" id={`option${index}`} name="options[]" value={cart._id} onChange={() => handleCheckboxChange(cart)} />
                         <span className='text-green-600 pl-2'><a href={`/store/${cart?.product_id?.store_id?.name}`}>{cart?.product_id?.store_id?.name}</a></span>
                         <div className='... text-sm'>
                           <p onClick={() => deleteCart(cart._id)} className=' text-red-600 hover:cursor-pointer'><span><FontAwesomeIcon icon={faTrashCan} style={{ color: "#bf3d1d", }} className='pr-2' />Remove</span></p>
@@ -103,7 +125,7 @@ const CartPage = () => {
 
                         <div className="grid grid-cols-4 gap-5">
                           <div className='... p-3'>
-                            <img src={`${imageSrc}/images/${cart?.product_id?.images[0]?.name}`} alt="" className='w-24' />
+                            <img src={`${imageSrc}/images/${cart?.product_id?.images[0]?.name}` || sample1} alt="" className='w-24' />
                           </div>
                           <div className='... text-xl'>
                             <p>{cart?.product_id?.name}</p>
@@ -112,30 +134,26 @@ const CartPage = () => {
                             <p>$ <span>{cart?.amount}</span></p>
                           </div>
                           <div className='... text-xl'>
-                            <p>Quantity <span><input type="number" id="numberRange" name="numberRange" min="1" max="10" className='bg-gray-50 border border-gray-300' value={cart?.quantity} /></span></p>
+                            <p>Quantity: <span>
+                            {cart?.quantity}</span></p>
                           </div>
-
-
                         </div>
                       </label><br />
                     </div>
                   )))
-                ) : (<div> Nothing in your cart yet </div>)}
-
-                {/* <input type="submit" value="Submit" /> */}
-              </form>
+                ) : (<div className='text-center'> Nothing in your cart yet ... </div>)}
             </div>
           </div>
           <div className="p-4 border-solid border-2 border-gray-100 rounded-md mt-4">
             <h1 className='text-center text-2xl font-bold'>Order Summary</h1>
             <div>
               <div className='text-xl'>
-                <p>Total Items: 18</p>
-                <p>Shipping Fee: $<span>199.00</span></p>
+                <p>Total Items: {selectedCarts.length}</p>
+                <p>Shipping Fee: $<span>29.00</span></p>
                 <p>Service payment: $2</p>
                 <hr />
               </div>
-              <p className='text-2xl font-bold'>Subtotal: $<span>2,009.00</span></p>
+              <p className='text-2xl font-bold'>Subtotal: $<span>{total}</span></p>
               <div className='pt-4 text-center'>
                 <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover-bg-green-700 dark:focus:ring-green-800">PROCEED TO CHECKOUT</button>
               </div>
