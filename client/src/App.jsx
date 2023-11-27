@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from './context/PrivateRoute';
 import StoreOwner from './context/StoreOwner';
@@ -20,8 +20,10 @@ import StoreOrders from './pages/StoreOrders';
 import AllReviews from './pages/AllReviews';
 import MyStore from './pages/MyStore';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import CheckoutPage from './pages/CheckoutPage';
 
 function App() {
+  const [orderObjects, setOrderObjects] =useState(null);
   return (
     <>
       <BrowserRouter>
@@ -35,7 +37,7 @@ function App() {
             <Route path="/my-products" element={<MyProducts />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/product/:id" element={<ProductPage />} />
-            <Route path="/cart" element={<PrivateRoute>  <CartPage /> </PrivateRoute> } />
+            <Route path="/cart" element={<PrivateRoute>  <CartPage setOrderObjects={setOrderObjects} /></PrivateRoute> } />
             <Route path="/orders" element={<PrivateRoute>  <OrdersPage /> </PrivateRoute> } />
             <Route path="/create-store" element={<PrivateRoute> <CreateStore /> </PrivateRoute> }/>
             <Route path="/add/product" element = {<StoreOwner> <CreateProduct/> </StoreOwner>} />
@@ -44,6 +46,7 @@ function App() {
             <Route path="/all-reviews" element={<PrivateRoute>  <AllReviews /> </PrivateRoute> } />
             <Route path="/my-store/profile" element={<PrivateRoute>  <MyStore /> </PrivateRoute> } />
             <Route path="/homepage" element={<PrivateRoute> <ViewPage /></PrivateRoute> } />
+            <Route path='/checkout' element={<PrivateRoute> <CheckoutPage orderObjects ={orderObjects} /></PrivateRoute> } />
           </Routes>
           </GoogleOAuthProvider>
         </AuthProvider>

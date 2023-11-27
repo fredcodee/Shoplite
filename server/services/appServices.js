@@ -176,25 +176,23 @@ async function getCart(userId){
 }
 
 
-async function order(email, address, status, storeId, userId, cartId, amount){
+async function order(email, address, status, userId, cartIds){
     try{
-        const cart = await Cart.findById(cartId)
-        if(cart.order_placed){
-            throw new Error('this order has being placed already')
-        }
-
+        // for each storeId in carts
         const newOrder = new Order({
             email:email,
             address:address,
             status:status,
             store_id:storeId,
             user_id:userId,
-            cart_id:cartId,
-            total_amount:amount
+            cart_id:cartIds,
         })
         await newOrder.save()
-        cart.order_placed = true
-        await cart.save()
+        for(const cartId of cartIds){
+            const cart = await Cart.findById(cartId)
+            cart.order_placed = true
+            await cart.save()
+        }
         return newOrder
 
     }catch (error) {

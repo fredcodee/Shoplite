@@ -71,17 +71,8 @@ const deleteCart  = async(req, res)=>{
 
 const order = async (req, res) => {
     try {
-        const data = req.body.data;
-
-        if (!Array.isArray(data)) {
-            return res.status(400).json({ error: 'Data must be an array of carted items' });
-        }
-
-        for (const orderData of data) {
-            const { email, address, status, storeId, userId, cartId } = orderData;
-            await appServices.order(email, address, status, storeId, userId, cartId);
-        }
-
+        const { email, address, cartIds} = req.body; //cartIds is an array
+        await appServices.order(email, address, "processing", req.user._id, cartIds);
         return res.json({ message: 'Orders placed successfully' });
     } catch (error) {
         errorHandler.errorHandler(error, res);
