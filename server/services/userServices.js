@@ -214,6 +214,21 @@ async function dashboardProps(storeId){
 }
 
 
+async function getUserAllOrders(userId){
+    try{
+        const myOrders = await Order.find({user_id:userId}).populate({
+            path: 'cart_id',
+            populate: {
+              path: 'product_id', // Path to the product reference within the cart object
+            },
+          })
+        return myOrders
+    } catch(error){
+        throw new Error(`Error getting orders ${error.message}`)
+    }
+}
+
+
 async function updateStoreProfile(storeId, name, bio, rating){
     try {
         const store = await Store.findById(storeId)
@@ -249,4 +264,4 @@ async function deleteStore(storeId){
 
 module.exports={generateToken,getUserById, findAndVerifyUserCredentials , addUserToDb, checkIfUserIsRegistered,
 addUserToDb, googleAuth, getUserStore, addUpdateStoreImage, checkUserHasOwnStore, dashboardProps, updateStoreProfile,
-deleteStore}
+deleteStore, getUserAllOrders}

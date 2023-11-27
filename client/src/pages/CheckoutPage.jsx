@@ -8,14 +8,13 @@ const CheckoutPage = ({ orderObjects}) => {
     const [myOrders, setmyOrders] = useState(orderObjects || []);
     const [shippingAddress, setShippingAddress] = useState('');
     const [email, setEmail] = useState('');
-    const [amount, setAmount] = useState('')
     const [error, setError] =  useState(null)
     const history = useNavigate()
     const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
+    const token = localStorage.getItem('token').replace(/"/g, '')
 
 
     useEffect(() => {
-        console.log(myOrders)
         checkObjects()
     }, []);
 
@@ -31,10 +30,16 @@ const CheckoutPage = ({ orderObjects}) => {
             const data =  {
                 email:email,
                 address:shippingAddress,
-                // 
+                cartIds: myOrders.map((cart)=>{ return cart._id})
             }
-            const response = await Api.post('/api/user/order');
-            // Handle successful checkout
+            await Api.post('/api/user/order',data, {
+                headers:{
+                    Authorization: `Bearee ${token}`
+                }
+            })
+            .then((response)=>{
+                // user order page
+            })
         } catch (error) {
             setError(error.message)
         }
@@ -73,10 +78,10 @@ const CheckoutPage = ({ orderObjects}) => {
                                     <hr />
                                     <div>
                                         <h2 className='font-bold'>Payment</h2>
-                                        <input type="radio" className="htmlForm-check-input " id="credit" name="payment-method" defaultChecked required />
+                                        <input type="radio" className="htmlForm-check-input " id="credit" name="payment-method" defaultChecked/>
                                             <label htmlFor="credit" className="htmlForm-check-label pr-4">Credit Card</label>
 
-                                        <input type="radio" className="htmlForm-check-input" id="debit" name="payment-method" required />
+                                        <input type="radio" className="htmlForm-check-input" id="debit" name="payment-method"/>
                                             <label htmlFor="debit" className="htmlForm-check-label">Debit Card</label>
                                     </div>
                                     <div className='pt-4 pb-4'>

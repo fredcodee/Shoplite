@@ -94,6 +94,15 @@ const editStoreProfile = async(req,res)=>{
     }
 }
 
+const myOrders = async(req, res)=>{
+    try{
+        const orders = await userServices.getUserAllOrders(req.user._id)
+        return res.json(orders)
+    }catch (error) {
+        errorHandler.errorHandler(error, res) 
+    }
+}
 
 
-module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile, getCart, deleteCart}
+
+module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile, getCart, deleteCart, myOrders}
