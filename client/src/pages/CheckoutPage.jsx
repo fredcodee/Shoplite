@@ -16,11 +16,11 @@ const CheckoutPage = ({ orderObjects}) => {
 
     useEffect(() => {
         checkObjects()
-    }, []);
+    }, [myOrders]);
 
     const checkObjects =  ()=>{
         if(myOrders.length == 0){
-            history('/homepage')
+            history('/orders')
         }
     }
 
@@ -34,12 +34,10 @@ const CheckoutPage = ({ orderObjects}) => {
             }
             await Api.post('/api/user/order',data, {
                 headers:{
-                    Authorization: `Bearee ${token}`
+                    Authorization: `Bearer ${token}`
                 }
             })
-            .then((response)=>{
-                // user order page
-            })
+            history('/orders');
         } catch (error) {
             setError(error.message)
         }

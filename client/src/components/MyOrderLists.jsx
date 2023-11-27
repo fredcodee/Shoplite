@@ -38,10 +38,13 @@ const MyOrderLists = ({orders}) => {
                             <p>Quantity <span>{order.cart_id.quantity}</span></p>
                         </div>
                         <div>
-                            <p>Order was placed on: {formatDateTime(order.date)}</p>
+                            <p>Order was placed on: <span className='font-bold'>{formatDateTime(order.date)}</span></p>
                             <p>Order Status: <span className={order.status === 'completed' ? 'text-green-800' : 'text-orange-500'} >{order.status}</span></p>
                         </div>
 
+                    </div>
+                    <div className='text-center text-orange-500 hover:cursor-pointer hover:text-green-600'>
+                        <a href="#">Review Product & Rate Store </a>
                     </div>
 
             </div>

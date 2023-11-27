@@ -1,36 +1,12 @@
-import React, {useEffect, useState} from 'react'
+import React, { useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser,faTruckFast } from '@fortawesome/free-solid-svg-icons'
 import Api from '../Api';
 
-const StoreOrdersLists = () => {
-    const [orders,  setOrders] = useState([])
+const StoreOrdersLists = ({ordersList}) => {
     const [error, setError] = useState(null)
     const storeId = `${localStorage.getItem('store')}`
     const token = localStorage.getItem('token').replace(/"/g, '');
-
-    useEffect(()=>{
-        getOrders()
-    },[])
-  
-
-    const getOrders = async () => {
-        try {
-            await Api.post('/api/store/all/orders', {storeId:storeId}, {
-                headers:{
-                    Authorization:token
-                }
-            })
-            .then((response)=>{
-                if(response.status == 200){
-                    setOrders(response.data)
-                }
-            })
-
-        } catch (error) {
-            setError(error.response.data.message);
-        }
-    }
 
     const updateStatus = async(orderId, status)=>{
         try {
@@ -46,9 +22,7 @@ const StoreOrdersLists = () => {
                     }
                 })
                 .then((response)=>{
-                    if (response.status == 200){
-                        getOrders()
-                    }
+                        window.location.reload();
                 })
             }
         } catch (error) {
@@ -59,8 +33,8 @@ const StoreOrdersLists = () => {
     <div>
         <div>
         {error && <div className='text-red-500 p-2 text-center'><p>{error}</p></div>}
-              {orders.length > 0 ? (
-                (orders.map((order, index)=>(
+              {ordersList.length > 0 ? (
+                (ordersList.map((order, index)=>(
                     <div  key ={index} className='border-solid border-2 border-gray-100 rounded-md mb-2 '>
                       <div className="grid grid-cols-5 gap-5">
                           <div className='... text-xl'>
@@ -88,7 +62,7 @@ const StoreOrdersLists = () => {
                       </div>
                   </div>
                 )))           
-              ) : (<div> <h1 className='text-center pt-6 text-cyan-800 text-lg'>No Orders yet ...</h1></div>)
+              ) : (<div> <h1 className='text-center pt-6 text-cyan-800 text-lg'>No ordersList yet ...</h1></div>)
               }
 
             </div>

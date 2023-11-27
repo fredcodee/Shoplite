@@ -225,7 +225,7 @@ async function getUserAllOrders(userId){
                  // Populate the 'images' field within 'product_id'
               }
             },
-          }).populate('store_id')
+          }).populate('store_id').sort({ date: -1 }); 
         return myOrders
     } catch(error){
         throw new Error(`Error getting orders ${error.message}`)

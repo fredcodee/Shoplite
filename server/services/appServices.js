@@ -232,7 +232,7 @@ async function getStoreOrders(storeId){
             populate: {
               path: 'product_id', // Path to the product reference within the cart object
             },
-          });
+          }).sort({ date: -1 })
         return orders
     }catch (error) {
         throw new Error(`Error getting store orders ${error.message}`)
