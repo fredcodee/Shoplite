@@ -216,12 +216,16 @@ async function dashboardProps(storeId){
 
 async function getUserAllOrders(userId){
     try{
-        const myOrders = await Order.find({user_id:userId}).populate({
+        const myOrders = await Order.find({user_id:userId}) .populate({
             path: 'cart_id',
             populate: {
-              path: 'product_id', // Path to the product reference within the cart object
+              path: 'product_id',
+              populate: {
+                path: 'images',
+                 // Populate the 'images' field within 'product_id'
+              }
             },
-          })
+          }).populate('store_id')
         return myOrders
     } catch(error){
         throw new Error(`Error getting orders ${error.message}`)
