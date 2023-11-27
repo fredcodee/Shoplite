@@ -5,6 +5,7 @@ const Cart =  require('../models/CartModel')
 const Order =  require('../models/OrderModel')
 const Review = require('../models/ReviewModel')
 const User = require('../models/UserModel')
+const mongoose = require('mongoose');
 
 
 
@@ -176,26 +177,50 @@ async function getCart(userId){
 }
 
 
-async function order(email, address, status, userId, cartIds){
-    try{
-        // for each storeId in carts
-        const newOrder = new Order({
-            email:email,
-            address:address,
-            status:status,
-            store_id:storeId,
-            user_id:userId,
-            cart_id:cartIds,
-        })
-        await newOrder.save()
-        for(const cartId of cartIds){
-            const cart = await Cart.findById(cartId)
-            cart.order_placed = true
-            await cart.save()
+async function order(email, address, status, userId, cartIds) {
+    try {
+        // Validate input parameters
+        if (!Array.isArray(cartIds) || cartIds.length === 0) {
+            throw new Error('Invalid cartIds');
         }
-        return newOrder
+        // Use a transaction to ensure data integrity
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        try {
+            for (const cartId of cartIds) {
+                const cart = await Cart.findById(cartId)
+                if (!cart) {
+                    throw new Error(`Cart not found for ID: ${cartId}`);
+                }
 
-    }catch (error) {
+                if(cart.order_placed){
+                    throw new Error(`this cart has already been ordered: ${cartId}`);
+                }
+
+                const newOrder = new Order({
+                    email,
+                    address,
+                    status,
+                    store_id: cart.store_id,
+                    user_id: userId,
+                    cart_id: cart._id,
+                });
+                await newOrder.save()
+                cart.order_placed = true
+                await cart.save()
+            }
+
+            await session.commitTransaction();
+            session.endSession();
+
+            return true
+        } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+            throw error;
+        }
+
+    } catch (error) {
         throw new Error(`Error add items to order ${error.message}`)
     }
 }
