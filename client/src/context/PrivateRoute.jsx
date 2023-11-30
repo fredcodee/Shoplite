@@ -1,48 +1,38 @@
 import React from 'react'
-import { useContext, useEffect, useState } from 'react'
-import AuthContext from '../context/AuthContext'
 import { Navigate } from 'react-router-dom'
 import Api from '../Api'
 
-const PrivateRoute = ({children, ...rest}) => {
-    const [authenticated, setAuthenticated] = useState(false)
-    const token = localStorage.getItem('token') || false
-    let {user} = useContext(AuthContext)
+const PrivateRoute = ({ children, ...rest }) => {
+  const token = localStorage.getItem('token') || false
 
-
-    useEffect(()=>{
-      if(token){
-        checkToken()
-      }
-    }, [])
-    
-
-    const checkToken = async()=>{
-      try {
-        await Api.get('/auth/check-token', {
-          headers: {
-            Authorization: `Bearer ${token.replace(/"/g, '')}`
+  const checkToken = async () => {
+    try {
+      await Api.get('/auth/check-token', {
+        headers: {
+          Authorization: `Bearer ${token.replace(/"/g, '')}`
+        }
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            return true
+          } else {
+            return false;
           }
         })
-        .then((response)=>{
-            if(response.status == 200)  {
-              setAuthenticated(true) }
-            if(response.status == 401 || response.status == 500){
-              setAuthenticated(false)
-            }
-        })
-      } catch (error) {
-        setAuthenticated(false)
-      }
-    }
-
-
-    
-    if (!user || !authenticated){
-        return <Navigate to ="/login" />    
+    } catch (error) {
+      return false
     } 
+  }
+
+
+
+  if (!checkToken) {
+    return <Navigate to="/login" />
+  }
 
   return children
 }
+
+
 
 export default PrivateRoute

@@ -41,10 +41,10 @@ function App() {
             <Route path="/orders" element={<PrivateRoute>  <OrdersPage /> </PrivateRoute> } />
             <Route path="/create-store" element={<PrivateRoute> <CreateStore /> </PrivateRoute> }/>
             <Route path="/add/product" element = {<StoreOwner> <CreateProduct/> </StoreOwner>} />
-            <Route path="/dashboard" element={<PrivateRoute>  <StoreDashboard /> </PrivateRoute> } />
-            <Route path="/store/orders" element={<PrivateRoute>  <StoreOrders /> </PrivateRoute> } />
-            <Route path="/all-reviews" element={<PrivateRoute>  <AllReviews /> </PrivateRoute> } />
-            <Route path="/my-store/profile" element={<PrivateRoute>  <MyStore /> </PrivateRoute> } />
+            <Route path="/dashboard" element={<StoreOwner>  <StoreDashboard /> </StoreOwner> } />
+            <Route path="/store/orders" element={<StoreOwner>  <StoreOrders /> </StoreOwner> } />
+            <Route path="/all-reviews" element={<StoreOwner>  <AllReviews /> </StoreOwner> } />
+            <Route path="/my-store/profile" element={<StoreOwner>  <MyStore /> </StoreOwner> } />
             <Route path="/homepage" element={<PrivateRoute> <ViewPage /></PrivateRoute> } />
             <Route path='/checkout' element={<PrivateRoute> <CheckoutPage orderObjects ={orderObjects} /></PrivateRoute> } />
           </Routes>
