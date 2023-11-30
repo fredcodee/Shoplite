@@ -25,7 +25,11 @@ const PrivateRoute = ({children, ...rest}) => {
           }
         })
         .then((response)=>{
-            if(response.status == 200)  setAuthenticated(true) 
+            if(response.status == 200)  {
+              setAuthenticated(true) }
+            if(response.status == 401 || response.status == 500){
+              setAuthenticated(false)
+            }
         })
       } catch (error) {
         setAuthenticated(false)
@@ -34,7 +38,7 @@ const PrivateRoute = ({children, ...rest}) => {
 
 
     
-    if (!user && !authenticated){
+    if (!user || !authenticated){
         return <Navigate to ="/login" />    
     } 
 
