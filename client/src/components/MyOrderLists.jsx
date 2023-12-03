@@ -44,7 +44,7 @@ const MyOrderLists = ({orders}) => {
 
                     </div>
                     <div className='text-center text-orange-500 hover:cursor-pointer hover:text-green-600'>
-                        <a href="#">Review Product & Rate Store </a>
+                        <a href={`/review/product/${order.cart_id.product_id._id}`}>Review Product & Rate Store </a>
                     </div>
 
             </div>

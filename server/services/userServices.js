@@ -248,6 +248,61 @@ async function updateStoreProfile(storeId, name, bio, rating){
     }
 }
 
+async function reviewAndRateProduct(review, rating,userId, productId, storeId){
+    try{
+        const newReview = new Review({
+            comment: review,
+            product_id:productId,
+            store_id:storeId,
+            user_id:userId,
+            rating: parseInt(rating)
+        })
+        await newReview.save()
+       
+        await updateProductRatings(productId)  //update product ratings
+        await updateStoreRatings(storeId)  //update store ratings
+        return true 
+    }
+    catch(error){
+        throw new Error(`Error reviewing and rating product ${error.message}`)
+    }
+}
+async function updateProductRatings(productId){
+    try{
+        const product = await Product.findById(productId)
+        const reviews = await Review.find({product_id:productId})
+        let sumRating = 0
+        const totalRatings = reviews.length
+        reviews.forEach((review) => {
+            sumRating += review.rating;
+        });
+        const averageRating = totalRatings > 0 ? sumRating / totalRatings : 0;
+        product.rating = averageRating
+        product.save()
+        return averageRating
+    }catch(error){
+        throw new Error(`Error updating product ratings ${error.message}`)
+    }
+}
+async function updateStoreRatings(storeId){
+    try{
+        const store = await Store.findById(storeId)
+        const products = await Product.find({store_id:storeId})
+        let sumRating = 0
+        const totalRatings = products.length
+
+        products.forEach((product)=>{
+            sumRating += product.rating
+        })
+        const averageRating = totalRatings > 0 ? sumRating / totalRatings : 0;
+        store.rating = averageRating
+        store.save()
+        return averageRating
+    }catch(error){
+        throw new Error(`Error updating store ratings ${error.message}`)
+    }
+}
+
 
 async function deleteStore(storeId){
     try {
@@ -268,4 +323,4 @@ async function deleteStore(storeId){
 
 module.exports={generateToken,getUserById, findAndVerifyUserCredentials , addUserToDb, checkIfUserIsRegistered,
 addUserToDb, googleAuth, getUserStore, addUpdateStoreImage, checkUserHasOwnStore, dashboardProps, updateStoreProfile,
-deleteStore, getUserAllOrders}
+deleteStore, getUserAllOrders, reviewAndRateProduct}

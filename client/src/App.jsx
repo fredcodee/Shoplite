@@ -21,6 +21,7 @@ import AllReviews from './pages/AllReviews';
 import MyStore from './pages/MyStore';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import CheckoutPage from './pages/CheckoutPage';
+import Review from './pages/Review';
 
 function App() {
   const [orderObjects, setOrderObjects] =useState(null);
@@ -47,6 +48,7 @@ function App() {
             <Route path="/my-store/profile" element={<StoreOwner>  <MyStore /> </StoreOwner> } />
             <Route path="/homepage" element={<PrivateRoute> <ViewPage /></PrivateRoute> } />
             <Route path='/checkout' element={<PrivateRoute> <CheckoutPage orderObjects ={orderObjects} /></PrivateRoute> } />
+            <Route path='/review/product/:id' element={<PrivateRoute> <Review/> </PrivateRoute>}/>
           </Routes>
           </GoogleOAuthProvider>
         </AuthProvider>

@@ -1,9 +1,6 @@
 const mongoose = require('mongoose')
 
 const reviewSchema = new mongoose.Schema({
-    email:{
-        type:String,
-     },
      comment:{
         type:String,
      },

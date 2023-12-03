@@ -11,7 +11,7 @@ const storeSchema = new mongoose.Schema({
     },
     rating:{
         type: Number,
-        default:0
+        default:0 //0-5
     },
     user_id:{
         type:mongoose.Schema.Types.ObjectId,

@@ -103,6 +103,16 @@ const myOrders = async(req, res)=>{
     }
 }
 
+const reviewAndRateProducts = async(req, res)=>{
+    try{
+        const {review, rating, productId, storeId} = req.body
+        await userServices.reviewAndRateProduct(review, rating, req.user, productId, storeId)
+        return  res.json({message: "review submitted"})
+    }catch(error){
+        errorHandler.errorHandler(error, res)
+    }
+}
 
 
-module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile, getCart, deleteCart, myOrders}
+
+module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile, getCart, deleteCart, myOrders, reviewAndRateProducts}
