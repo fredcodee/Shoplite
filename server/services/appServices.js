@@ -97,13 +97,11 @@ async function addImagesToProducts(productId, imageId) {
 async function getProductDetails(productId){
     try {
         const product = await Product.findById(productId).populate('images store_id')
-        //get reviews --------------
-        const reviews =  await Review.find({product_id:product._id})
-        //get total reviews  ------------------
+        const reviews =  await Review.find({product_id:product._id}).populate('user_id')
         const data = {
             product: product,
             reviews: reviews,
-            totat_reviews:reviews.length
+            total_reviews:reviews.length
         }
         if (!product) {
             throw new Error('Product not found');
@@ -193,7 +191,7 @@ async function order(email, address, status, userId, cartIds) {
                     throw new Error(`Cart not found for ID: ${cartId}`);
                 }
 
-                if(cart.order_placed){
+                if (cart.order_placed) {
                     throw new Error(`this cart has already been ordered: ${cartId}`);
                 }
 
@@ -208,6 +206,14 @@ async function order(email, address, status, userId, cartIds) {
                 await newOrder.save()
                 cart.order_placed = true
                 await cart.save()
+                //update product stock
+                const product = await Product.findById(cart.product_id)
+                product.stock -= cart.quantity
+                if (product <= 0) {
+                    product.stock = 0
+                }
+                await product.save()
+
             }
 
             await session.commitTransaction();

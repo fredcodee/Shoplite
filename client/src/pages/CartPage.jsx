@@ -123,7 +123,7 @@ const CartPage = ({setOrderObjects}) => {
                 {cart.length > 0 ? (
                   (cart.map((cart, index) => (
                     <div className='border-solid border-2 border-gray-100 rounded-md mb-4 ' key={index}>
-                      <label htmlFor={`option${index}`}>
+                      <label htmlFor={`option${index}`}></label>
                         <input type="checkbox" id={`option${index}`} name="options[]" value={cart._id} onChange={() => handleCheckboxChange(cart)} />
                         <span className='text-green-600 pl-2'><a href={`/store/${cart?.product_id?.store_id?.name}`}>{cart?.product_id?.store_id?.name}</a></span>
                         <div className='... text-sm'>
@@ -145,7 +145,7 @@ const CartPage = ({setOrderObjects}) => {
                             {cart?.quantity}</span></p>
                           </div>
                         </div>
-                      </label><br />
+                      <br />
                     </div>
                   )))
                 ) : (<div className='text-center'> Nothing in your cart yet ... </div>)}

@@ -119,7 +119,7 @@ const ProductPage = () => {
                 </div>
                 <div className="...">
                     <h3 className='font-bold text-lg'>{product?.product?.name}</h3>
-                    <p><FontAwesomeIcon icon={faStar} style={{ color: "#ecc969", }} /><span>4.5/5   </span><a href="#" className='text-red-600 pl-2'>{product?.totat_reviews} ratings ...</a></p>
+                    <p><FontAwesomeIcon icon={faStar} style={{ color: "#ecc969", }} /><span>{product?.product?.rating || 'No ratings yet'} / 5   </span>< small className='text-red-600 pl-2'>{product?.total_reviews} ratings ...</small></p>
                     <h1 className='text-green-600 text-2xl pt-5 pb-4'>$ <span>{product?.product?.price}</span></h1>
                     <hr />
                     <div className='pt-4'>
@@ -129,15 +129,19 @@ const ProductPage = () => {
                                 required
                                 onChange={e => setQuantity(e.target.value)}
                             />
-                            <div className='pt-4'>
-                                <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Order Now</button>
-                                <button type="button" onClick={addToCart} className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:focus:ring-yellow-900">Add to Cart</button>
-                            </div>
+                                {product?.product?.stock > 0 ? <div  className='pt-4'>
+                                    <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Order Now</button>
+                                    <button type="button" onClick={addToCart} className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:focus:ring-yellow-900">Add to Cart</button>
+                                </div> : 
+                                <div>
+                                    <p className='text-red-500'>Out of stock</p>
+                                </div>}
+                               
                     </div>
 
                     <div>
                         <small>Sold by <span><a href={`/store/${product?.product?.store_id?.name || "unknown"}`} className='text-green-600 pr-2'>{product?.product?.store_id?.name || "Unknown Store"}</a></span></small>
-                        <small><FontAwesomeIcon icon={faStar} style={{ color: "#ecc969", }} />4.5/5  </small>
+                        <small><FontAwesomeIcon icon={faStar} style={{ color: "#ecc969", }} />{product?.product?.store_id.rating}/5  </small>
                     </div>
                 </div>
             </div>
@@ -150,8 +154,8 @@ const ProductPage = () => {
 
             <div className='border-solid border-2 border-grey-100 mt-5 p-4 rounded-md'>
                 <h3 className='font-bold text-lg'>Ratings & Reviews</h3>
-                <h1><FontAwesomeIcon icon={faStar} style={{ color: "#ecc969", }} className='text-4xl' /><span className='text-4xl'>4.5/5 </span></h1>
-                <small>{product?.totat_reviews} ratings</small>
+                <h1><FontAwesomeIcon icon={faStar} style={{ color: "#ecc969", }} className='text-4xl' /><span className='text-4xl'>{product?.product?.rating || 'No ratings yet'} /5 </span></h1>
+                <small>{product?.total_reviews} ratings</small>
                 <hr />
                 <div>
                     <div className='pt-3 pb-3'>
@@ -159,7 +163,7 @@ const ProductPage = () => {
                         <hr />
                     </div>
                     {
-                        product?.totat_reviews > 0 ? (
+                        product?.total_reviews > 0 ? (
                             (product?.reviews?.map((review, index) => (
                                 <div className='p-3' key={index}>
                                     <p className='float-right'>{review.date}</p>
