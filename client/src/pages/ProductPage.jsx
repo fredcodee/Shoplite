@@ -7,7 +7,7 @@ import { useParams, useNavigate} from 'react-router-dom'
 import sample1 from '../assets/images/sample1.png'
 import Api from '../Api'
 
-const ProductPage = () => {
+const ProductPage = ({setOrderObjects}) => {
     const { id } = useParams();
     const [product, setProduct] = useState([])
     const [error, setError] = useState(null)
@@ -78,6 +78,39 @@ const ProductPage = () => {
             setError("error.message")
         }
     }
+
+    const orderNow =async()=>{
+        try{
+            if(!token) history('/login')
+            if(quantity > product.product.stock){
+                setSuccess(null)
+                setError(`only ${product.product.stock} are available in stocks right now`)
+            }else{
+                const data = {
+                    productId: product.product._id,
+                    storeId:product.product.store_id._id,
+                    amount:  product.product.price * parseInt(quantity == "" ? 1: quantity ),
+                    quantity: quantity == "" ? 1 : parseInt(quantity)
+                }
+                await Api.post('/api/user/order-now',data,{
+                    headers:{
+                        Authorization: `Bearer ${token.replace(/"/g, '')}`
+                    }
+                })
+                .then(async(response)=>{
+                    if (response.status === 200) {
+                        setError(null)
+                        await setOrderObjects([response.data])
+                        history('/checkout')
+                    }
+                })
+            }
+
+        }catch(error){
+            setSuccess(null)
+            setError("error try again later")
+        }
+    }
     return (
         <div className='container mx-auto pt-3'>
             <Navbar />
@@ -130,7 +163,7 @@ const ProductPage = () => {
                                 onChange={e => setQuantity(e.target.value)}
                             />
                                 {product?.product?.stock > 0 ? <div  className='pt-4'>
-                                    <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Order Now</button>
+                                    <button type="button" onClick ={orderNow} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Order Now</button>
                                     <button type="button" onClick={addToCart} className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:focus:ring-yellow-900">Add to Cart</button>
                                 </div> : 
                                 <div>

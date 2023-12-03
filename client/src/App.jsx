@@ -37,7 +37,7 @@ function App() {
             <Route path="/store/:storeName" element={<Store />} />
             <Route path="/my-products" element={<MyProducts />} />
             <Route path="/error" element={<ErrorPage />} />
-            <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/product/:id" element={<ProductPage setOrderObjects={setOrderObjects}/>} />
             <Route path="/cart" element={<PrivateRoute>  <CartPage setOrderObjects={setOrderObjects} /></PrivateRoute> } />
             <Route path="/orders" element={<PrivateRoute>  <OrdersPage /> </PrivateRoute> } />
             <Route path="/create-store" element={<PrivateRoute> <CreateStore /> </PrivateRoute> }/>

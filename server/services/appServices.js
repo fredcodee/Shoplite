@@ -156,6 +156,7 @@ async function cart(storeId, amount, productId, quantity, userId) {
     }
 }
 
+
 async function getCart(userId){
     try {
         const cart = await Cart.find({user_id:userId, order_placed:false}).populate({
@@ -171,6 +172,25 @@ async function getCart(userId){
         return cart
     } catch (error) {
        throw new Error(`Error add items to cart ${error.message}`) 
+    }
+}
+
+async function populateCart(cartId){
+    try{
+        console.log(cartId)
+        const cart = await Cart.findById(cartId).populate({
+            path: 'product_id',
+            populate: [
+                {
+                  path: 'images', 
+                },
+                {
+                  path: 'store_id',
+                },
+              ],})
+        return cart
+    }catch (error) {
+        throw new Error(`Error populate cart data ${error.message}`)
     }
 }
 
@@ -302,5 +322,5 @@ async function deleteCart(cartId, userId){
 }
 
 module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails, 
-    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore, getCart, deleteCart}
+    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore, getCart, deleteCart, populateCart}
 

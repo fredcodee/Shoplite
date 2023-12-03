@@ -9,6 +9,7 @@ import Api from '../Api';
 const CartPage = ({setOrderObjects}) => {
   const [cart, setCart] = useState([])
   const [success, setSuccess] = useState(null)
+  const [error, setError] = useState(null)
   const token = localStorage.getItem('token').replace(/"/g, '')
   const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
   const [selectedCarts, setSelectedCarts] = useState([]);

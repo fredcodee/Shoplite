@@ -79,6 +79,19 @@ const order = async (req, res) => {
     }
 }
 
+const orderNow = async(req, res)=>{
+    try{
+        const{ storeId, amount, productId, quantity} = req.body
+        const addToCart = await appServices.cart(storeId, amount, productId, quantity,  req.user)
+        //populate some data
+        const data = await appServices.populateCart(addToCart._id.toString())
+        return res.json(data)
+
+    } catch (error) {
+        errorHandler.errorHandler(error, res);
+    }
+}
+
 
 
 const editStoreProfile = async(req,res)=>{
@@ -115,4 +128,5 @@ const reviewAndRateProducts = async(req, res)=>{
 
 
 
-module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile, getCart, deleteCart, myOrders, reviewAndRateProducts}
+module.exports={getUserProfile, getUserStoreProfile, storeDashBoard, addToCart, order, editStoreProfile, getCart, deleteCart, myOrders, reviewAndRateProducts ,
+orderNow}

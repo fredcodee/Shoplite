@@ -18,6 +18,6 @@ router.get('/all/carts', userAuth, userController.getCart)
 router.delete('/cart/delete', userAuth, userController.deleteCart)
 router.get('/my-orders', userAuth, userController.myOrders)
 router.post('/review/product', userAuth, userController.reviewAndRateProducts)
-
+router.post('/order-now', userAuth , userController.orderNow)
 
 module.exports= router
