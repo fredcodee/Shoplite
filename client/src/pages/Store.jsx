@@ -59,7 +59,7 @@ const Store = () => {
             <NavBar />
             <div className='container mx-auto pt-3'>
                 <div className='p-3 rounded-md flex gap-5 justify-center items-center'>
-                    <img src={sample9} alt="image" className='w-28' />
+                    <img src={`${imageSrc}/images/${store.image?.name}`|| sample9 } alt="image" className='w-28' />
                     <div>
                         <h1 className='font-bold text-xl'>{store?.name}</h1>
                         <div className='w-72'>
@@ -92,7 +92,7 @@ const Store = () => {
                             (products.map((product, index) => (
                                 <div key={index} className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
                                     <a href={`/product/${product._id}`}>
-                                        <img src={`${imageSrc}/images/${product.images[0].name}` || sample3} alt="" className='h-40 w-52' />
+                                        <img src={`${imageSrc}/images/${product.images[0].name}` || sample9} alt="" className='h-40 w-52' />
                                         <div>
                                             <h3 className='font-bold text-lg'>{product.name}</h3>
                                             <p>$ <span>{product.price}</span></p>

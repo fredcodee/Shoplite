@@ -177,7 +177,6 @@ async function getCart(userId){
 
 async function populateCart(cartId){
     try{
-        console.log(cartId)
         const cart = await Cart.findById(cartId).populate({
             path: 'product_id',
             populate: [
@@ -321,6 +320,21 @@ async function deleteCart(cartId, userId){
     }
 }
 
+async function searchAll(word){
+        try{
+            const products = await Product.find({ name: { $regex: `^${word}`, $options: 'i' } }).populate('images store_id')
+            const stores = await Store.find({ name: { $regex: `^${word}`, $options: 'i' } }).populate('image')
+            return  {
+                word,
+                products,
+                stores
+            }
+
+        } catch(error){
+        throw new Error(`Error search all products/store${error.message}`)
+    }
+}
+
 module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails, 
-    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore, getCart, deleteCart, populateCart}
+    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore, getCart, deleteCart, populateCart, searchAll}
 

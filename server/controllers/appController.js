@@ -192,5 +192,23 @@ const getStore =async(req, res)=>{
 }
 
 
+const searchHompage = async(req, res)=>{
+    try{
+        const {search} = req.body
+        const data =  await appServices.searchAll(search)
+        return res.json(data)
+    }catch(error){
+        errorHandler.errorHandler(error, res)
+    }
+}
+
+const homepageContents = async(req, res)=>{
+    try{
+        //
+    }catch(error){
+        errorHandler.errorHandler(error, res)
+    }
+}
+
 module.exports={health, createStore, addProduct, removeProduct, viewStoreProducts, addStoreProfileImage, uploadProductImages, getProduct,
-    editProduct, storeOrders, updateOrderStatus, getAllReviews, deleteStore, getStore}
+    editProduct, storeOrders, updateOrderStatus, getAllReviews, deleteStore, getStore, searchHompage, homepageContents}

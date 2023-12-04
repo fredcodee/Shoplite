@@ -5,7 +5,9 @@ import { faSellsy } from '@fortawesome/free-brands-svg-icons'
 import hompageimg1 from '../assets/images/hompage1.jpg'
 import hompageimg2 from '../assets/images/hompage2.jpg'
 
+
 const HomePage = () => {
+
   return (
     <div>
       <div className='text-center p-4 bg-green-500 text-white rounded-full'>

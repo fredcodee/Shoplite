@@ -18,4 +18,5 @@ router.post('/store/order/status',  userAuth, appcontroller.updateOrderStatus)
 router.post('/store/all/reviews', userAuth, appcontroller.getAllReviews)
 router.post('/store/delete', userAuth, appcontroller.deleteStore)
 router.post('/get/store', appcontroller.getStore)
+router.post('/search',  appcontroller.searchHompage)
 module.exports= router
