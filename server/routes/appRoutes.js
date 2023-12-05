@@ -19,4 +19,5 @@ router.post('/store/all/reviews', userAuth, appcontroller.getAllReviews)
 router.post('/store/delete', userAuth, appcontroller.deleteStore)
 router.post('/get/store', appcontroller.getStore)
 router.post('/search',  appcontroller.searchHompage)
+router.get('/featured', appcontroller.homepageContents)
 module.exports= router

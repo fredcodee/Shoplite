@@ -4,13 +4,6 @@ import SearchResults from '../components/SearchResults'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import sample1 from '../assets/images/sample1.png'
-import sample2 from '../assets/images/sample2.jpg'
-import sample3 from '../assets/images/sample3.jpg'
-import sample4 from '../assets/images/sample4.jpg'
-import sample5 from '../assets/images/sample5.jpg'
-import sample6 from '../assets/images/sample6.jpg'
-import sample7 from '../assets/images/sample7.jpg'
-import sample8 from '../assets/images/sample8.jpg'
 import sample9 from '../assets/images/sample9.jpg'
 import Api from '../Api'
 
@@ -19,7 +12,23 @@ const ViewPage = () => {
   const [search, setSearch] = useState('')
   const [searchItems, setSearchItems] = useState([])
   const [classShow, setClassShow] =useState(false)
+  const [products, setProducts] = useState([])
+  const [stores, setStores] = useState([])
+  const imageSrc = import.meta.env.VITE_MODE == 'Production' ? import.meta.env.VITE_API_BASE_URL_PROD : import.meta.env.VITE_API_BASE_URL_DEV
 
+  useEffect(()=>{
+    getFeatured()
+  }, [])
+
+
+  const getFeatured = async ()=>{
+    await Api.get('/api/featured')
+    .then((response)=>{
+      setProducts(response.data.products)
+      setStores(response.data.stores)
+    })
+  }
+  
 
   const handleSearch = async (e) => {
     e.preventDefault()
@@ -66,60 +75,17 @@ const ViewPage = () => {
             Featured Products
           </h3>
           <div className='grid grid-cols-6 gap-4 pt-5'>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="/product/11">
-              <img src={sample1} alt="" className='h-40 w-52'/>
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
+            {products.map((product, index)=>(
+              <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600" key={index}>
+                <a href={`/product/${product._id}`}>
+                  <img src={`${imageSrc}/images/${product?.images[0]?.name}` || sample1} alt="" className='h-40 w-52' />
+                  <div>
+                    <h3 className='font-bold text-lg'>{product.name}</h3>
+                    <p>$ <span>{product.price}</span></p>
+                  </div>
+                </a>
               </div>
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
-              <img src={sample2} alt="" className='h-40 w-52'/>
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
-              <img src={sample3} alt="" className='h-40 w-52'/>
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
-              <img src={sample4} alt="" className='h-40 w-52'/>
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
-              <img src={sample5} alt=""  className='h-40 w-52'/>
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="">
-              <img src={sample6} alt="" className='h-40 w-52' />
-              <div>
-                <h3 className='font-bold text-lg'>Title</h3>
-                <p>$ <span>122</span></p>
-              </div>
-              </a>
-            </div>
+            ))}
           </div>
           <div>
 
@@ -131,30 +97,15 @@ const ViewPage = () => {
             Featured Stores
           </h3>
           <div className='grid grid-cols-3 gap-4 pt-5'>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="#">
-                <img src={sample7} alt="" />
-                <h3 className='font-bold text-lg'>Name of store</h3>
-                <p><FontAwesomeIcon icon={faStar} style={{color: "#ecc969",}} /><span>4.5/5</span></p>
-
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="#">
-                <img src={sample8} alt="" />
-                <h3 className='font-bold text-lg'>Name of store</h3>
-                <p><FontAwesomeIcon icon={faStar} style={{color: "#ecc969",}} /><span>4.5/5</span></p>
-
-              </a>
-            </div>
-            <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
-              <a href="#">
-                <img src={sample9} alt="" />
-                <h3 className='font-bold text-lg'>Name of store</h3>
-                <p><FontAwesomeIcon icon={faStar} style={{color: "#ecc969",}} /><span>4.5/5</span></p>
-
-              </a>
-            </div>
+            { stores.map((store, index)=>(
+              <div className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600" key={index}>
+                <a href="#">
+                  <img src={`${imageSrc}/images/${store.image?.name}`|| sample9 }  alt="" />
+                  <h3 className='font-bold text-lg'>{store.name}</h3>
+                  <p><FontAwesomeIcon icon={faStar} style={{ color: "#ecc969", }} /><span>{store.rating}/5</span></p>
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </div>

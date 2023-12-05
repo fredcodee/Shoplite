@@ -335,6 +335,23 @@ async function searchAll(word){
     }
 }
 
+async function featured(){
+    try{
+        const products = await Product.find().populate('images store_id')
+        const randomProducts = products.sort(()=> 0.5 - Math.random())
+        
+        const stores =  await Store.find().populate('image')
+        const randomStores = stores.sort(()=> 0.5 - Math.random())
+        
+        return {
+            products: randomProducts.slice(0, 6),
+            stores: randomStores.slice(0,3)
+        }
+    }catch(error){
+        throw new Error(`Error getting featured products and stores ${error.message}`)
+    }
+}
+
 module.exports = {createStore, addProduct, removeProduct, getAllStoreProducts, saveImages, addImagesToProducts, getProductDetails, updateProductDetails, 
-    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore, getCart, deleteCart, populateCart, searchAll}
+    cart, order, getStoreOrders, updateOrderStatus, getAllReviews, getStore, getCart, deleteCart, populateCart, searchAll, featured}
 

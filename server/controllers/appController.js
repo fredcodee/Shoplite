@@ -204,7 +204,8 @@ const searchHompage = async(req, res)=>{
 
 const homepageContents = async(req, res)=>{
     try{
-        //
+        const data =  await appServices.featured()
+        return res.json(data)
     }catch(error){
         errorHandler.errorHandler(error, res)
     }
