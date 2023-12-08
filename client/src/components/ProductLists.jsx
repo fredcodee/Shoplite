@@ -90,12 +90,12 @@ const ProductLists = () => {
       await Api.post('api/store/product', { productId: productId })
         .then((response) => {
           if (response.status == 200) {
-            setSelectedProduct(response.data)
-            setName(response.data.name);
-            setDescription(response.data.description);
-            setPrice(response.data.price);
-            setStock(response.data.stock);
-            setSelectedImages(response.data.images);
+            setSelectedProduct(response.product)
+            setName(response.data.product.name);
+            setDescription(response.data.product.description);
+            setPrice(response.data.product.price);
+            setStock(response.data.product.stock);
+            setSelectedImages(response.data.product.images);
           }
         })
 
@@ -198,14 +198,15 @@ const ProductLists = () => {
               {owner ? (<div className='flex gap-4'>
                 <p className='hover:cursor-pointer hover:text-xl'
                   onClick={() => {
-                    togglePopUpForEditProduct();
                     getProductDetails(product._id)
+                    togglePopUpForEditProduct();
                   }}>
                   <FontAwesomeIcon icon={faPenToSquare} style={{ color: "#dd843c", }} /></p>
                 <p className='hover:cursor-pointer hover:text-xl'
                   onClick={() => {
-                    togglePopUpForDeleteProduct();
                     getProductDetails(product._id)
+                    togglePopUpForDeleteProduct();
+                    
                   }}>
                   <FontAwesomeIcon icon={faTrash} style={{ color: "#cb2a2a", }} /></p>
               </div>) :
@@ -279,7 +280,7 @@ const ProductLists = () => {
                         className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm" />
                     </div>
                     <div className="container mx-auto flex justify-center">
-                      {selectedImages.map((image, index) => (
+                      {selectedImages?.map((image, index) => (
                         <div key={index} className="d-inline-block m-2 pb-3">
                           <img src={`${imageSrc}/images/${image.name}` || URL.createObjectURL(image)} alt={`Image ${index}`} className="h-40 w-52" />
                           <button onClick={() => handleImageRemove(index)} className='text-red-900 hover:text-red-600'>Remove</button>
