@@ -90,7 +90,7 @@ const ProductLists = () => {
       await Api.post('api/store/product', { productId: productId })
         .then((response) => {
           if (response.status == 200) {
-            setSelectedProduct(response.product)
+            setSelectedProduct(response.data.product)
             setName(response.data.product.name);
             setDescription(response.data.product.description);
             setPrice(response.data.product.price);
@@ -150,6 +150,7 @@ const ProductLists = () => {
         })
     } catch (error) {
       setError(error.message);
+      console.log(error)
       setNewImages('')
       togglePopUpForEditProduct()
     }
@@ -286,7 +287,7 @@ const ProductLists = () => {
                           <button onClick={() => handleImageRemove(index)} className='text-red-900 hover:text-red-600'>Remove</button>
                         </div>
                       ))}
-                      {newImages.map((image, index) => (
+                      {newImages?.map((image, index) => (
                         <div key={index} className="d-inline-block m-2 pb-3">
                           <img src={URL.createObjectURL(image)} alt={`Image ${index}`} className="h-40 w-52" />
                           <button onClick={() => handleImageRemoveFromNew(index)} className='text-red-900 hover:text-red-600'>Remove</button>
