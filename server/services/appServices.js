@@ -295,7 +295,7 @@ async function getAllReviews(storeId){
 
 async function getStore(storeName){
     try {
-        const store  = await Store.findOne({name: storeName})
+        const store  = await Store.findOne({name: storeName}).populate("image")
         if (store){
             return store
         }
