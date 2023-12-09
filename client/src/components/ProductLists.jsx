@@ -186,7 +186,7 @@ const ProductLists = () => {
     <div>
       {error && <div className='text-red-500 p-2 text-center'><p>{error}</p></div>}
       <div className='grid grid-cols-6 gap-4 pt-5'>
-        {products.length > 1 ? (
+        {products.length > 0 ? (
           (products.map((product, index) => (
             <div key={index} className="... border-solid border-2 border-grey-100 p-3 rounded-md hover:text-green-600">
               <a href={`/product/${product._id}`}>
